@@ -1,0 +1,10 @@
+language: go
+
+go:
+    - tip
+
+script:
+    - cd lib; go test
+
+notifications:
+    email: false
