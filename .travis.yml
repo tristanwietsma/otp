@@ -4,7 +4,7 @@ go:
     - tip
 
 script:
-    - cd lib; go test
+    - go test
 
 notifications:
     email: false
