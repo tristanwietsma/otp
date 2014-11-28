@@ -3,20 +3,22 @@ package totp
 import (
 	"bytes"
 	"crypto/hmac"
-	"crypto/sha1"
 	"encoding/base32"
 	"encoding/binary"
+	"hash"
 	"strconv"
 	"time"
 )
 
-// Returns the current time interval using the Google Authenticator convention of 30 seconds.
-func GetInterval() int64 {
-	return time.Now().Unix() / 30
+type hashFunc func() hash.Hash
+
+// Returns the current time interval.
+func GetInterval(period int64) int64 {
+	return time.Now().Unix() / period
 }
 
-// Returns the TOTP code using the Google Authenticator convention of SHA1.
-func GetCode(secret string, iv int64) string {
+// Returns the TOTP code.
+func GetCode(secret string, iv int64, algo hashFunc, digits int) string {
 	key, err := base32.StdEncoding.DecodeString(secret)
 	if err != nil {
 		panic(err)
@@ -28,7 +30,7 @@ func GetCode(secret string, iv int64) string {
 		panic(err)
 	}
 
-	mac := hmac.New(sha1.New, key)
+	mac := hmac.New(algo, key)
 	mac.Write(msg.Bytes())
 	hash := mac.Sum(nil)
 
@@ -43,5 +45,9 @@ func GetCode(secret string, iv int64) string {
 	}
 
 	code = (code & 0x7FFFFFFF) % 1000000
-	return strconv.Itoa(int(code))
+	stringCode := strconv.Itoa(int(code))
+	for len(stringCode) < digits {
+		stringCode = "0" + stringCode
+	}
+	return stringCode
 }
