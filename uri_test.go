@@ -5,21 +5,32 @@ import (
 )
 
 func TestNewTOTP(t *testing.T) {
-	_, err := NewTOTP(
+	if _, err := NewTOTP(
 		"label",
 		"MFRGGZDFMZTWQ2LK",
 		"issuer",
 		"sha1",
 		6,
 		30,
-	)
-
-	if err != nil {
+	); err != nil {
 		t.Error("failed to build new totp key")
 	}
-
-	/*uri := key.String()
-	if uri != "blah" {
-		t.Error(uri)
-	}*/
 }
+
+func TestNewHOTP(t *testing.T) {
+	if _, err := NewHOTP(
+		"label",
+		"MFRGGZDFMZTWQ2LK",
+		"issuer",
+		"sha1",
+		6,
+		30,
+	); err != nil {
+		t.Error("failed to build new hotp key")
+	}
+}
+
+/*uri := key.String()
+if uri != "blah" {
+	t.Error(uri)
+}*/
