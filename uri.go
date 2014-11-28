@@ -1,11 +1,11 @@
 package otp
 
 import (
-	"bytes"
+	_ "bytes"
 	"encoding/base32"
 	"errors"
 	"strings"
-	"text/template"
+	_ "text/template"
 )
 
 // Defines a secret key per otpauth specifications. See https://code.google.com/p/google-authenticator/wiki/KeyUriFormat for more information.
@@ -87,11 +87,11 @@ func NewHOTP(label, secret, issuer, algo string, digits int, param int64) (*KeyU
 	return key, err
 }
 
-// Returns the string representation of the KeyUri.
+/* Returns the string representation of the KeyUri.
 func (k KeyUri) String() string {
 	markup := "otpauth://{{.method}}/{{.label}}?secret={{.secret}}"
 	tmpl, _ := template.New("uri").Parse(markup)
 	var uri bytes.Buffer
 	tmpl.Execute(&uri, k)
 	return uri.String()
-}
+}*/
