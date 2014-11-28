@@ -1,4 +1,4 @@
-package totp
+package otp
 
 import (
 	"crypto/sha1"
