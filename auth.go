@@ -18,19 +18,19 @@ func GetInterval(period int64) int64 {
 }
 
 // Returns the TOTP/HOTP code.
-func GetCode(secret string, iv int64, algo hashFunc, digits int) string {
+func GetCode(secret string, iv int64, hasher hashFunc, digits int) (string, error) {
 	key, err := base32.StdEncoding.DecodeString(secret)
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 
 	msg := bytes.Buffer{}
 	err = binary.Write(&msg, binary.BigEndian, iv)
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 
-	mac := hmac.New(algo, key)
+	mac := hmac.New(hasher, key)
 	mac.Write(msg.Bytes())
 	hash := mac.Sum(nil)
 
@@ -41,7 +41,7 @@ func GetCode(secret string, iv int64, algo hashFunc, digits int) string {
 	truncBytes := bytes.NewBuffer(truncatedHash)
 	err = binary.Read(truncBytes, binary.BigEndian, &code)
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 
 	code = (code & 0x7FFFFFFF) % 1000000
@@ -49,5 +49,5 @@ func GetCode(secret string, iv int64, algo hashFunc, digits int) string {
 	for len(stringCode) < digits {
 		stringCode = "0" + stringCode
 	}
-	return stringCode
+	return stringCode, nil
 }
