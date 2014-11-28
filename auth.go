@@ -17,7 +17,7 @@ func GetInterval(period int64) int64 {
 	return time.Now().Unix() / period
 }
 
-// Returns the TOTP code.
+// Returns the TOTP/HOTP code.
 func GetCode(secret string, iv int64, algo hashFunc, digits int) string {
 	key, err := base32.StdEncoding.DecodeString(secret)
 	if err != nil {
