@@ -4,8 +4,8 @@ import (
 	"testing"
 )
 
-func TestNewTOTP(t *testing.T) {
-	if _, err := NewTOTP(
+func TestNewTotp(t *testing.T) {
+	if _, err := NewTotp(
 		"label",
 		"MFRGGZDFMZTWQ2LK",
 		"issuer",
@@ -17,8 +17,8 @@ func TestNewTOTP(t *testing.T) {
 	}
 }
 
-func TestNewHOTP(t *testing.T) {
-	if _, err := NewHOTP(
+func TestNewHotp(t *testing.T) {
+	if _, err := NewHotp(
 		"label",
 		"MFRGGZDFMZTWQ2LK",
 		"issuer",
@@ -30,7 +30,18 @@ func TestNewHOTP(t *testing.T) {
 	}
 }
 
-/*uri := key.String()
-if uri != "blah" {
-	t.Error(uri)
-}*/
+func TestTotpString(t *testing.T) {
+	key, _ := NewTotp(
+		"label",
+		"MFRGGZDFMZTWQ2LK",
+		"issuer",
+		"sha1",
+		6,
+		30,
+	)
+
+	uri := key.String()
+	if uri != "otpauth://totp/label?Secret=MFRGGZDFMZTWQ2LK&Issuer=issuer&Algo=SHA1&Digits=6&Period=30" {
+		t.Error(uri)
+	}
+}
