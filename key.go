@@ -36,8 +36,7 @@ type Key struct {
 	Counter int    // The initial counter value. Applies only to 'hotp'.
 }
 
-func (k Key) GetTotpCode() (string, error) {
-	iv := GetInterval(int64(k.Period))
+func (k Key) GetHotpCode(iv int64) (string, error) {
 	var h hashFunc
 	if k.Algo == "SHA1" {
 		h = sha1.New
@@ -49,6 +48,12 @@ func (k Key) GetTotpCode() (string, error) {
 		h = md5.New
 	}
 	code, err := GetCode(k.Secret, iv, h, k.Digits)
+	return code, err
+}
+
+func (k Key) GetTotpCode() (string, error) {
+	iv := GetInterval(int64(k.Period))
+	code, err := k.GetHotpCode(iv)
 	return code, err
 }
 
