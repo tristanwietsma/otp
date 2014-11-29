@@ -17,6 +17,32 @@ func TestNewTotp(t *testing.T) {
 	}
 }
 
+func TestNewBadTotp(t *testing.T) {
+	if _, err := NewTotp(
+		"label",
+		"MifdasfsfdsfFRGGZDFMZTWQ2LK",
+		"issuer",
+		"sha1",
+		6,
+		30,
+	); err == nil {
+		t.Fail()
+	}
+}
+
+func TestNewBadHotp(t *testing.T) {
+	if _, err := NewHotp(
+		"label",
+		"MFRfadfdssdGGZDFMZTWQ2LK",
+		"issuer",
+		"sha1",
+		6,
+		30,
+	); err != nil {
+		t.Fail()
+	}
+}
+
 func TestNewHotp(t *testing.T) {
 	if _, err := NewHotp(
 		"label",
