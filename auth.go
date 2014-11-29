@@ -17,16 +17,14 @@ func GetInterval(period int64) int64 {
 	return time.Now().Unix() / period
 }
 
-/* Returns a one-time password.
-
-- `Secret` is a Base32 encoded HMAC key.
-- `iv` is the initialization value for the HMAC.
-- `hashFunc` is the hashing function to use in the HMAC. See `HASHES` for list of valid functions.
-- `digits` is the length of digits to display in the output code.
-
-Example:
-    code, err := GetCode("MFRGGZDFMZTWQ2LK", 1, sha1.New, 6)
-*/
+// Returns a one-time password.
+// secret is a Base32 encoded HMAC key.
+// iv is the initialization value for the HMAC.
+// hashFunc is the hashing function to use in the HMAC. See HASHES for list of valid functions.
+// digits is the length of digits to display in the output code.
+//
+// Example:
+//      code, err := GetCode("MFRGGZDFMZTWQ2LK", 1, sha1.New, 6)
 func GetCode(secret string, iv int64, hashFunc Hash, digits int) (string, error) {
 	key, err := base32.StdEncoding.DecodeString(secret)
 	if err != nil {
