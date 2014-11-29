@@ -14,6 +14,16 @@ func TestInvalidMethod(t *testing.T) {
 	}
 }
 
+func TestMissingLabel(t *testing.T) {
+	key := Key{
+		Method: "totp",
+	}
+	v, _ := key.IsValid()
+	if v == true {
+		t.Fail()
+	}
+}
+
 func TestInvalidLabel(t *testing.T) {
 	key := Key{
 		Method: "totp",
