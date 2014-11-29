@@ -32,3 +32,7 @@ func TestBadSecretInGetCode(t *testing.T) {
 		t.Error("Decoding worked for bad base32.")
 	}
 }
+
+func TestShortDigits(t *testing.T) {
+	_, _ = GetCode("MFRGGZDFMZTWQ2LK", 19, sha1.New, 6)
+}
