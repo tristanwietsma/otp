@@ -42,15 +42,8 @@ type Key struct {
 }
 
 // Given an initialization value, returns the proscribed HMAC one-time password.
-func (k Key) GetHOTPCode(iv int64) (string, error) {
+func (k Key) GetCode(iv int64) (string, error) {
 	code, err := GetCode(k.Secret, iv, k.Algo, k.Digits)
-	return code, err
-}
-
-// Using the current time and parameters defined by the key, returns the one-time password based on Unix system time.
-func (k Key) GetTOTPCode() (string, error) {
-	iv := GetInterval(int64(k.Period))
-	code, err := k.GetHOTPCode(iv)
 	return code, err
 }
 
@@ -154,7 +147,7 @@ func (k Key) IsValid() (bool, error) {
 }
 
 // Returns the string representation of the Key according to the Google Authenticator KeyUriFormat. See https://code.google.com/p/google-authenticator/wiki/KeyUriFormat for more detail.
-func (k Key) String() string {
+func (k Key) ToURI() string {
 	markup := "otpauth://{{.Method}}/{{.Label}}?Secret={{.Secret}}"
 	if len(k.Issuer) > 0 {
 		markup = markup + "&Issuer={{.Issuer}}"
