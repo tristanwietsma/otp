@@ -106,15 +106,6 @@ func (k Key) IsValid() (bool, string) {
 	return true, ""
 }
 
-func stringInSlice(a string, list []string) bool {
-	for _, b := range list {
-		if b == a {
-			return true
-		}
-	}
-	return false
-}
-
 func newKey(method, label, secret, issuer, algo, digits, period, counter string) (*Key, error) {
 
 	k := Key{
