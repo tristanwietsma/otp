@@ -147,7 +147,7 @@ func (k Key) IsValid() (bool, error) {
 }
 
 // Returns the string representation of the Key according to the Google Authenticator KeyUriFormat. See https://code.google.com/p/google-authenticator/wiki/KeyUriFormat for more detail.
-func (k Key) String() string {
+func (k Key) ToURI() string {
 	markup := "otpauth://{{.Method}}/{{.Label}}?Secret={{.Secret}}"
 	if len(k.Issuer) > 0 {
 		markup = markup + "&Issuer={{.Issuer}}"

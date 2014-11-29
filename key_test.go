@@ -138,7 +138,7 @@ func TestTOTPString(t *testing.T) {
 		30,
 	)
 
-	uri := key.String()
+	uri := key.ToURI()
 	if uri != "otpauth://totp/label?Secret=MFRGGZDFMZTWQ2LK&Issuer=issuer&Algo=SHA1&Digits=6&Period=30" {
 		t.Error(uri)
 	}
@@ -154,7 +154,7 @@ func TestHOTPString(t *testing.T) {
 		42,
 	)
 
-	uri := key.String()
+	uri := key.ToURI()
 	if uri != "otpauth://hotp/label?Secret=MFRGGZDFMZTWQ2LK&Issuer=issuer&Algo=SHA1&Digits=6&Counter=42" {
 		t.Error(uri)
 	}
