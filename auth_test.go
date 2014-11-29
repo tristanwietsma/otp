@@ -34,5 +34,8 @@ func TestBadSecretInGetCode(t *testing.T) {
 }
 
 func TestShortDigits(t *testing.T) {
-	_, _ = GetCode("MFRGGZDFMZTWQ2LK", 19, sha1.New, 6)
+	code, _ := GetCode("MFRGGZDFMZTWQ2LK", 19, sha1.New, 6)
+	if len(code) != 6 {
+		t.Fail()
+	}
 }
