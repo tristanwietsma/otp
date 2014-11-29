@@ -25,10 +25,7 @@ func GetCode(secret string, iv int64, hasher hashFunc, digits int) (string, erro
 	}
 
 	msg := bytes.Buffer{}
-	err = binary.Write(&msg, binary.BigEndian, iv)
-	if err != nil {
-		return "", err
-	}
+	_ = binary.Write(&msg, binary.BigEndian, iv)
 
 	mac := hmac.New(hasher, key)
 	mac.Write(msg.Bytes())
@@ -39,10 +36,7 @@ func GetCode(secret string, iv int64, hasher hashFunc, digits int) (string, erro
 
 	var code int32
 	truncBytes := bytes.NewBuffer(truncatedHash)
-	err = binary.Read(truncBytes, binary.BigEndian, &code)
-	if err != nil {
-		return "", err
-	}
+	_ = binary.Read(truncBytes, binary.BigEndian, &code)
 
 	code = (code & 0x7FFFFFFF) % 1000000
 	stringCode := strconv.Itoa(int(code))
