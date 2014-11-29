@@ -6,12 +6,12 @@ import (
 	"testing"
 )
 
-func TestKeyError(t *testing.T) {
-	err := KeyError{
+func TestkeyError(t *testing.T) {
+	err := keyError{
 		param: "param",
 		msg:   "msg",
 	}
-	if err.Error() != "KeyError - param - msg" {
+	if err.Error() != "keyError - param - msg" {
 		t.Fail()
 	}
 }

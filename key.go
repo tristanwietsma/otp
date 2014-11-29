@@ -12,16 +12,19 @@ import (
 	"text/template"
 )
 
+// List of valid methods.
 var METHODS = []string{"totp", "hotp"}
+
+// List of valid hash functions.
 var HASHES = []Hash{sha1.New, sha256.New, sha512.New, md5.New}
 
-type KeyError struct {
+type keyError struct {
 	param string
 	msg   string
 }
 
-func (e KeyError) Error() string {
-	return fmt.Sprintf("KeyError - %v - %v", e.param, e.msg)
+func (e keyError) Error() string {
+	return fmt.Sprintf("keyError - %v - %v", e.param, e.msg)
 }
 
 // Defines a key per otpauth specifications. See https://code.google.com/p/google-authenticator/wiki/KeyFormat for more information.
@@ -54,7 +57,7 @@ func (k Key) IsValid() (bool, error) {
 	*/
 
 	if !stringInSlice(k.Method, METHODS) {
-		keyErr := KeyError{
+		keyErr := keyError{
 			"Method",
 			"Must match one of {" + strings.Join(METHODS, ", ") + "}",
 		}
@@ -66,7 +69,7 @@ func (k Key) IsValid() (bool, error) {
 	*/
 
 	if len(k.Label) == 0 {
-		keyErr := KeyError{
+		keyErr := keyError{
 			"Label",
 			"Missing",
 		}
@@ -74,7 +77,7 @@ func (k Key) IsValid() (bool, error) {
 	}
 
 	if strings.ContainsRune(k.Label, '/') {
-		keyErr := KeyError{
+		keyErr := keyError{
 			"Label",
 			"Contains forward slash",
 		}
@@ -86,7 +89,7 @@ func (k Key) IsValid() (bool, error) {
 	*/
 
 	if len(k.Secret) == 0 {
-		keyErr := KeyError{
+		keyErr := keyError{
 			"Secret",
 			"Missing",
 		}
@@ -94,7 +97,7 @@ func (k Key) IsValid() (bool, error) {
 	}
 
 	if _, err := base32.StdEncoding.DecodeString(k.Secret); err != nil {
-		keyErr := KeyError{
+		keyErr := keyError{
 			"Secret",
 			"Invalid Base32",
 		}
@@ -106,7 +109,7 @@ func (k Key) IsValid() (bool, error) {
 	*/
 
 	if strings.ContainsRune(k.Issuer, '/') {
-		keyErr := KeyError{
+		keyErr := keyError{
 			"Issuer",
 			"Contains forward slash",
 		}
@@ -118,7 +121,7 @@ func (k Key) IsValid() (bool, error) {
 	*/
 
 	if !hashInSlice(k.Algo, HASHES) {
-		keyErr := KeyError{
+		keyErr := keyError{
 			"Algo",
 			"Must match one of {sha1, sha256, sha512, md5}",
 		}
@@ -130,7 +133,7 @@ func (k Key) IsValid() (bool, error) {
 	*/
 
 	if !(k.Digits == 6 || k.Digits == 8) {
-		keyErr := KeyError{
+		keyErr := keyError{
 			"Digits",
 			"Must be either 6 o 8",
 		}
@@ -142,7 +145,7 @@ func (k Key) IsValid() (bool, error) {
 	*/
 
 	if k.Method == "totp" && k.Period < 1 {
-		keyErr := KeyError{
+		keyErr := keyError{
 			"Period",
 			"Must be positive",
 		}
