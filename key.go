@@ -3,8 +3,7 @@ package otp
 import (
 	"bytes"
 	"encoding/base32"
-	"errors"
-	"strconv"
+	"fmt"
 	"strings"
 	"text/template"
 )
@@ -12,134 +11,130 @@ import (
 var METHODS = []string{"totp", "hotp"}
 var HASHES = []string{"SHA1", "SHA256", "SHA512", "MD5"}
 
-// Defines a Secret key per otpauth specifications. See https://code.google.com/p/google-authenticator/wiki/KeyFormat for more information.
-type Key struct {
-	Method  string // Required.
-	Label   string // Required.
-	Secret  string // Required.
-	Issuer  string // Optional.
-	Algo    string // Optional.
-	Digits  string // Optional.
-	Period  string // Optional for TOTP.
-	Counter string // Required for HOTP.
+type KeyError struct {
+	param string
+	msg   string
 }
 
-func (k Key) IsValid() (bool, string) {
+func (e KeyError) Error() string {
+	return fmt.Sprintf("KeyError - %v - %v", e.param, e.msg)
+}
 
-	// validate method
+// Defines a key per otpauth specifications. See https://code.google.com/p/google-authenticator/wiki/KeyFormat for more information.
+type Key struct {
+	Method  string // Describes the initialization method used to generate the code. Acceptable values are either 'totp' or 'hotp' for time-based or counter-based, respectively.
+	Label   string // A descriptive label for the key. Generally, this is an account identifier.
+	Secret  string // String representation of the base32 encoded integer that serves the HMAC secret key.
+	Issuer  string // The issuer of the key.
+	Algo    string // The hash algorithm used in the HMAC. 'SHA1', 'SHA256', 'SHA512', and 'MD5' are supported.
+	Digits  int    // The length of the code. 6 or 8 are acceptable.
+	Period  int    // The number of seconds the code is valid for. Applies only to 'totp'.
+	Counter int    // The initial counter value. Applies only to 'hotp'.
+}
+
+func (k Key) IsValid() (bool, error) {
+
+	/*
+	   check method
+	*/
+
 	if !stringInSlice(k.Method, METHODS) {
-		msg := "'Method' must match on of {" + strings.Join(METHODS, ", ") + "}."
-		return false, msg
+		keyErr := KeyError{
+			"Method",
+			"Must match one of {" + strings.Join(METHODS, ", ") + "}",
+		}
+		return false, keyErr
 	}
 
-	// validate label
-	if k.Label == "" {
-		return false, "'Label' is empty."
+	/*
+	   check label
+	*/
+
+	if len(k.Label) == 0 {
+		keyErr := KeyError{
+			"Label",
+			"Missing",
+		}
+		return false, keyErr
 	}
 
 	if strings.ContainsRune(k.Label, '/') {
-		return false, "'Label' contains '/'."
+		keyErr := KeyError{
+			"Label",
+			"Contains forward slash",
+		}
+		return false, keyErr
 	}
 
-	// validate secret
-	if k.Secret == "" {
-		return false, "'Secret' is empty."
-	}
+	/*
+	   check secret
+	*/
 
-	if k.Secret != strings.ToUpper(k.Secret) {
-		return false, "'Secret' is not valid Base32; it contains lowercase characters."
+	if len(k.Secret) == 0 {
+		keyErr := KeyError{
+			"Secret",
+			"Missing",
+		}
+		return false, keyErr
 	}
 
 	if _, err := base32.StdEncoding.DecodeString(k.Secret); err != nil {
-		return false, "'Secret' is not valid Base32; it does not decode."
+		keyErr := KeyError{
+			"Secret",
+			"Invalid Base32",
+		}
+		return false, keyErr
 	}
 
-	// validate issuer
+	/*
+	   check issuer
+	*/
+
 	if strings.ContainsRune(k.Issuer, '/') {
-		return false, "'Issuer' contains '/'."
+		keyErr := KeyError{
+			"Issuer",
+			"Contains forward slash",
+		}
+		return false, keyErr
 	}
 
-	// validate algo
-	if k.Algo != "" {
-		if k.Algo != strings.ToUpper(k.Algo) {
-			return false, "'Algo' contains lowercase characters."
-		}
+	/*
+	   check algo
+	*/
 
-		if !stringInSlice(k.Algo, HASHES) {
-			msg := "'Algo' must match one of {" + strings.Join(HASHES, ", ") + "}."
-			return false, msg
+	if !stringInSlice(k.Algo, HASHES) {
+		keyErr := KeyError{
+			"Algo",
+			"Must match one of {" + strings.Join(HASHES, ", ") + "}",
 		}
+		return false, keyErr
 	}
 
-	// validate digits
-	if k.Digits != "" {
-		if _, err := strconv.Atoi(k.Digits); err != nil {
-			return false, "'Digits' must be an integer."
-		}
+	/*
+	   check digits
+	*/
 
-		if !(k.Digits == "6" || k.Digits == "8") {
-			return false, "'Digits' must be either 6 or 8."
+	if !(k.Digits == 6 || k.Digits == 8) {
+		keyErr := KeyError{
+			"Digits",
+			"Must be either 6 o 8",
 		}
+		return false, keyErr
 	}
 
-	// validate period
-	if k.Method == "totp" && k.Period != "" {
-		period, err := strconv.Atoi(k.Period)
-		if err != nil {
-			return false, "'Period' must be an integer."
+	/*
+	   check period
+	*/
+
+	if k.Method == "totp" && k.Period < 1 {
+		keyErr := KeyError{
+			"Period",
+			"Must be positive",
 		}
-		if period < 1 {
-			return false, "Period must be a positive integer."
-		}
+		return false, keyErr
 	}
 
-	// validate counter
-	if k.Method == "hotp" {
-		if k.Counter == "" {
-			return false, "'Counter' is empty."
-		}
-		if _, err := strconv.Atoi(k.Counter); err != nil {
-			return false, "'Counter' must be defined and an integer."
-		}
-	}
-
-	return true, ""
-}
-
-func newKey(method, label, secret, issuer, algo, digits, period, counter string) (*Key, error) {
-
-	k := Key{
-		Method:  method,
-		Label:   label,
-		Secret:  strings.ToUpper(secret),
-		Issuer:  issuer,
-		Algo:    strings.ToUpper(algo),
-		Digits:  digits,
-		Period:  period,
-		Counter: counter,
-	}
-
-	if v, msg := k.IsValid(); v != true {
-		return &k, errors.New(msg)
-	}
-
-	return &k, nil
-}
-
-// Returns a TOTP Key.
-func NewTotp(label, secret, issuer, algo string, digits, period int) (*Key, error) {
-	d := strconv.Itoa(digits)
-	p := strconv.Itoa(period)
-	k, err := newKey("totp", label, secret, issuer, algo, d, p, "")
-	return k, err
-}
-
-// Returns a HOTP Key.
-func NewHotp(label, secret, issuer, algo string, digits, counter int) (*Key, error) {
-	d := strconv.Itoa(digits)
-	c := strconv.Itoa(counter)
-	k, err := newKey("hotp", label, secret, issuer, algo, d, "", c)
-	return k, err
+	return true, nil
 }
 
 // Returns the string representation of the Key.
@@ -149,15 +144,9 @@ func (k Key) String() string {
 		markup = markup + "&Issuer={{.Issuer}}"
 	}
 
-	if len(k.Algo) > 0 {
-		markup = markup + "&Algo={{.Algo}}"
-	}
+	markup = markup + "&Algo={{.Algo}}&Digits={{.Digits}}"
 
-	if k.Digits != "" {
-		markup = markup + "&Digits={{.Digits}}"
-	}
-
-	if k.Method == "totp" && k.Period != "" {
+	if k.Method == "totp" {
 		markup = markup + "&Period={{.Period}}"
 	}
 
