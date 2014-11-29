@@ -54,14 +54,14 @@ func (k Key) GetTOTPCode() (string, error) {
 	return code, err
 }
 
-func (k Key) HasValidMethod() error {
+func (k Key) hasValidMethod() error {
 	if !stringInSlice(k.Method, METHODS) {
 		return KeyError{"Method", "Invalid value"}
 	}
 	return nil
 }
 
-func (k Key) HasValidLabel() error {
+func (k Key) hasValidLabel() error {
 	if len(k.Label) == 0 {
 		return KeyError{"Label", "Missing value"}
 	}
@@ -73,7 +73,7 @@ func (k Key) HasValidLabel() error {
 	return nil
 }
 
-func (k Key) HasValidSecret() error {
+func (k Key) hasValidSecret() error {
 	if len(k.Secret) == 0 {
 		return KeyError{"Secret", "Missing value"}
 	}
@@ -85,28 +85,28 @@ func (k Key) HasValidSecret() error {
 	return nil
 }
 
-func (k Key) HasValidIssuer() error {
+func (k Key) hasValidIssuer() error {
 	if strings.ContainsRune(k.Issuer, '/') {
 		return KeyError{"Issuer", "Contains '/'"}
 	}
 	return nil
 }
 
-func (k Key) HasValidAlgo() error {
+func (k Key) hasValidAlgo() error {
 	if !hashInSlice(k.Algo, HASHES) {
 		return KeyError{"Algo", "Invalid hashing algorithm"}
 	}
 	return nil
 }
 
-func (k Key) HasValidDigits() error {
+func (k Key) hasValidDigits() error {
 	if !(k.Digits == 6 || k.Digits == 8) {
 		return KeyError{"Digits", "Not equal to 6 or 8"}
 	}
 	return nil
 }
 
-func (k Key) HasValidPeriod() error {
+func (k Key) hasValidPeriod() error {
 	if k.Method == "totp" && k.Period < 1 {
 		return KeyError{"Period", "Negative value"}
 	}
@@ -116,37 +116,37 @@ func (k Key) HasValidPeriod() error {
 func (k Key) IsValid() (bool, error) {
 
 	// check method
-	if err := k.HasValidMethod(); err != nil {
+	if err := k.hasValidMethod(); err != nil {
 		return false, err
 	}
 
 	//check label
-	if err := k.HasValidLabel(); err != nil {
+	if err := k.hasValidLabel(); err != nil {
 		return false, err
 	}
 
 	// check secret
-	if err := k.HasValidSecret(); err != nil {
+	if err := k.hasValidSecret(); err != nil {
 		return false, err
 	}
 
 	// check issuer
-	if err := k.HasValidIssuer(); err != nil {
+	if err := k.hasValidIssuer(); err != nil {
 		return false, err
 	}
 
 	// check algo
-	if err := k.HasValidAlgo(); err != nil {
+	if err := k.hasValidAlgo(); err != nil {
 		return false, err
 	}
 
 	// check digits
-	if err := k.HasValidDigits(); err != nil {
+	if err := k.hasValidDigits(); err != nil {
 		return false, err
 	}
 
 	// check period
-	if err := k.HasValidPeriod(); err != nil {
+	if err := k.hasValidPeriod(); err != nil {
 		return false, err
 	}
 
