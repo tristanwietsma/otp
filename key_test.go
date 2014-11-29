@@ -6,8 +6,8 @@ import (
 	"testing"
 )
 
-func TestkeyError(t *testing.T) {
-	err := keyError{
+func TestKeyError(t *testing.T) {
+	err := KeyError{
 		param: "param",
 		msg:   "msg",
 	}
