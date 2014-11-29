@@ -12,17 +12,19 @@ import (
 	"text/template"
 )
 
-// List of valid methods.
+// These are acceptable inputs for `Key.Method`.
 var METHODS = []string{"totp", "hotp"}
 
-// List of valid hash functions.
+// There are supported hash algorithms for `Key.Algo`.
 var HASHES = []Hash{sha1.New, sha256.New, sha512.New, md5.New}
 
+// Custom error type for Key related errors. Generally refers to validation errors.
 type KeyError struct {
 	param string
 	msg   string
 }
 
+// Renders the error string.
 func (e KeyError) Error() string {
 	return fmt.Sprintf("KeyError - %v - %v", e.param, e.msg)
 }
@@ -39,117 +41,113 @@ type Key struct {
 	Counter int    // The initial counter value. Applies only to 'hotp'.
 }
 
-func (k Key) GetHotpCode(iv int64) (string, error) {
+// Given an initialization value, returns the proscribed HMAC one-time password.
+func (k Key) GetHOTPCode(iv int64) (string, error) {
 	code, err := GetCode(k.Secret, iv, k.Algo, k.Digits)
 	return code, err
 }
 
-func (k Key) GetTotpCode() (string, error) {
+// Using the current time and parameters defined by the key, returns the one-time password based on Unix system time.
+func (k Key) GetTOTPCode() (string, error) {
 	iv := GetInterval(int64(k.Period))
-	code, err := k.GetHotpCode(iv)
+	code, err := k.GetHOTPCode(iv)
 	return code, err
+}
+
+func (k Key) hasValidMethod() error {
+	if !stringInSlice(k.Method, METHODS) {
+		return KeyError{"Method", "Invalid value"}
+	}
+	return nil
+}
+
+func (k Key) hasValidLabel() error {
+	if len(k.Label) == 0 {
+		return KeyError{"Label", "Missing value"}
+	}
+
+	if strings.ContainsRune(k.Label, '/') {
+		return KeyError{"Label", "Contains '/'"}
+	}
+
+	return nil
+}
+
+func (k Key) hasValidSecret() error {
+	if len(k.Secret) == 0 {
+		return KeyError{"Secret", "Missing value"}
+	}
+
+	if _, err := base32.StdEncoding.DecodeString(k.Secret); err != nil {
+		return KeyError{"Secret", "Invalid Base32"}
+	}
+
+	return nil
+}
+
+func (k Key) hasValidIssuer() error {
+	if strings.ContainsRune(k.Issuer, '/') {
+		return KeyError{"Issuer", "Contains '/'"}
+	}
+	return nil
+}
+
+func (k Key) hasValidAlgo() error {
+	if !hashInSlice(k.Algo, HASHES) {
+		return KeyError{"Algo", "Invalid hashing algorithm"}
+	}
+	return nil
+}
+
+func (k Key) hasValidDigits() error {
+	if !(k.Digits == 6 || k.Digits == 8) {
+		return KeyError{"Digits", "Not equal to 6 or 8"}
+	}
+	return nil
+}
+
+func (k Key) hasValidPeriod() error {
+	if k.Method == "totp" && k.Period < 1 {
+		return KeyError{"Period", "Negative value"}
+	}
+	return nil
 }
 
 func (k Key) IsValid() (bool, error) {
 
-	/*
-	   check method
-	*/
-
-	if !stringInSlice(k.Method, METHODS) {
-		keyErr := KeyError{
-			"Method",
-			"Must match one of {" + strings.Join(METHODS, ", ") + "}",
-		}
-		return false, keyErr
+	// check method
+	if err := k.hasValidMethod(); err != nil {
+		return false, err
 	}
 
-	/*
-	   check label
-	*/
-
-	if len(k.Label) == 0 {
-		keyErr := KeyError{
-			"Label",
-			"Missing",
-		}
-		return false, keyErr
+	//check label
+	if err := k.hasValidLabel(); err != nil {
+		return false, err
 	}
 
-	if strings.ContainsRune(k.Label, '/') {
-		keyErr := KeyError{
-			"Label",
-			"Contains forward slash",
-		}
-		return false, keyErr
+	// check secret
+	if err := k.hasValidSecret(); err != nil {
+		return false, err
 	}
 
-	/*
-	   check secret
-	*/
-
-	if len(k.Secret) == 0 {
-		keyErr := KeyError{
-			"Secret",
-			"Missing",
-		}
-		return false, keyErr
+	// check issuer
+	if err := k.hasValidIssuer(); err != nil {
+		return false, err
 	}
 
-	if _, err := base32.StdEncoding.DecodeString(k.Secret); err != nil {
-		keyErr := KeyError{
-			"Secret",
-			"Invalid Base32",
-		}
-		return false, keyErr
+	// check algo
+	if err := k.hasValidAlgo(); err != nil {
+		return false, err
 	}
 
-	/*
-	   check issuer
-	*/
-
-	if strings.ContainsRune(k.Issuer, '/') {
-		keyErr := KeyError{
-			"Issuer",
-			"Contains forward slash",
-		}
-		return false, keyErr
+	// check digits
+	if err := k.hasValidDigits(); err != nil {
+		return false, err
 	}
 
-	/*
-	   check algo
-	*/
-
-	if !hashInSlice(k.Algo, HASHES) {
-		keyErr := KeyError{
-			"Algo",
-			"Must match one of {sha1, sha256, sha512, md5}",
-		}
-		return false, keyErr
-	}
-
-	/*
-	   check digits
-	*/
-
-	if !(k.Digits == 6 || k.Digits == 8) {
-		keyErr := KeyError{
-			"Digits",
-			"Must be either 6 o 8",
-		}
-		return false, keyErr
-	}
-
-	/*
-	   check period
-	*/
-
-	if k.Method == "totp" && k.Period < 1 {
-		keyErr := KeyError{
-			"Period",
-			"Must be positive",
-		}
-		return false, keyErr
+	// check period
+	if err := k.hasValidPeriod(); err != nil {
+		return false, err
 	}
 
 	return true, nil

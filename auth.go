@@ -1,6 +1,3 @@
-/*
-One-time password (OTP) implementation. Supports HMAC-based (HOTP) and time-based (TOTP) methods.
-*/
 package otp
 
 import (
@@ -21,7 +18,7 @@ func GetInterval(period int64) int64 {
 }
 
 // Returns the TOTP/HOTP code.
-func GetCode(secret string, iv int64, h Hash, digits int) (string, error) {
+func GetCode(secret string, iv int64, hashFunc Hash, digits int) (string, error) {
 	key, err := base32.StdEncoding.DecodeString(secret)
 	if err != nil {
 		return "", err
@@ -30,7 +27,7 @@ func GetCode(secret string, iv int64, h Hash, digits int) (string, error) {
 	msg := bytes.Buffer{}
 	_ = binary.Write(&msg, binary.BigEndian, iv)
 
-	mac := hmac.New(h, key)
+	mac := hmac.New(hashFunc, key)
 	mac.Write(msg.Bytes())
 	digest := mac.Sum(nil)
 

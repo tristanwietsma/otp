@@ -128,8 +128,8 @@ func TestBadPeriod(t *testing.T) {
 	}
 }
 
-func TestTotpString(t *testing.T) {
-	key, _ := NewTotp(
+func TestTOTPString(t *testing.T) {
+	key, _ := NewTOTPKey(
 		"label",
 		"MFRGGZDFMZTWQ2LK",
 		"issuer",
@@ -144,8 +144,8 @@ func TestTotpString(t *testing.T) {
 	}
 }
 
-func TestHotpString(t *testing.T) {
-	key, _ := NewHotp(
+func TestHOTPString(t *testing.T) {
+	key, _ := NewHOTPKey(
 		"label",
 		"MFRGGZDFMZTWQ2LK",
 		"issuer",
@@ -160,8 +160,8 @@ func TestHotpString(t *testing.T) {
 	}
 }
 
-func TestGetHotpCode(t *testing.T) {
-	key, _ := NewHotp(
+func TestGetHOTPCode(t *testing.T) {
+	key, _ := NewHOTPKey(
 		"label",
 		"MFRGGZDFMZTWQ2LK",
 		"issuer",
@@ -169,14 +169,14 @@ func TestGetHotpCode(t *testing.T) {
 		6,
 		0,
 	)
-	code, err := key.GetHotpCode(1)
+	code, err := key.GetHOTPCode(1)
 	if err != nil || code != "765705" {
 		t.Error("Code did not match for first interval.")
 	}
 }
 
-func TestSmokeGetTotpCode(t *testing.T) {
-	key, _ := NewTotp(
+func TestSmokeGetTOTPCode(t *testing.T) {
+	key, _ := NewTOTPKey(
 		"label",
 		"MFRGGZDFMZTWQ2LK",
 		"issuer",
@@ -184,7 +184,7 @@ func TestSmokeGetTotpCode(t *testing.T) {
 		6,
 		30,
 	)
-	if _, err := key.GetTotpCode(); err != nil {
+	if _, err := key.GetTOTPCode(); err != nil {
 		t.Fail()
 	}
 }
