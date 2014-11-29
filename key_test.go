@@ -4,6 +4,16 @@ import (
 	"testing"
 )
 
+func TestInvalidMetho(t *testing.T) {
+	key := Key{
+		Method: "crypto!",
+	}
+	v, _ := key.IsValid()
+	if v == true {
+		t.Fail()
+	}
+}
+
 func TestTotpString(t *testing.T) {
 	key, _ := NewTotp(
 		"label",
