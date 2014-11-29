@@ -29,7 +29,7 @@ func (e KeyError) Error() string {
 	return fmt.Sprintf("KeyError - %v - %v", e.param, e.msg)
 }
 
-// Defines all parameter required for code generation, including useful metadata.
+// Defines set of parameters required for code generation, including metadata.
 type Key struct {
 	Method  string // Initialization method. Acceptable values are either 'totp' or 'hotp' for time-based or counter-based, respectively.
 	Label   string // Label for the key.
