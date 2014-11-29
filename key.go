@@ -12,10 +12,10 @@ import (
 	"text/template"
 )
 
-// These are acceptable inputs for `Key.Method`.
+// Supported values for `Key.Method`.
 var METHODS = []string{"totp", "hotp"}
 
-// There are supported hash algorithms for `Key.Algo`.
+// Supported values algorithms for `Key.Algo`.
 var HASHES = []Hash{sha1.New, sha256.New, sha512.New, md5.New}
 
 // Custom error type for Key related errors. Generally refers to validation errors.
