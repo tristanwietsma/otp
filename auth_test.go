@@ -25,3 +25,10 @@ func TestGetCode(t *testing.T) {
 		t.Error("Code did not match for second interval.")
 	}
 }
+
+func TestBadSecretInGetCode(t *testing.T) {
+	_, err := GetCode("abc123", 1, sha1.New, 6)
+	if err == nil {
+		t.Error("Decoding worked for bad base32.")
+	}
+}
