@@ -4,9 +4,20 @@ import (
 	"testing"
 )
 
-func TestInvalidMetho(t *testing.T) {
+func TestInvalidMethod(t *testing.T) {
 	key := Key{
 		Method: "crypto!",
+	}
+	v, _ := key.IsValid()
+	if v == true {
+		t.Fail()
+	}
+}
+
+func TestInvalidLabel(t *testing.T) {
+	key := Key{
+		Method: "totp",
+		Label:  "t/w",
 	}
 	v, _ := key.IsValid()
 	if v == true {
