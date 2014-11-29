@@ -22,11 +22,11 @@ func (e KeyError) Error() string {
 
 // Defines a key per otpauth specifications. See https://code.google.com/p/google-authenticator/wiki/KeyFormat for more information.
 type Key struct {
-	Method  string // Describes the initialization method used to generate the code. Acceptable values are either 'totp' or 'hotp' for time-based or counter-based, respectively.
-	Label   string // A descriptive label for the key. Generally, this is an account identifier.
-	Secret  string // String representation of the base32 encoded integer that serves the HMAC secret key.
+	Method  string // Initialization method. Acceptable values are either 'totp' or 'hotp' for time-based or counter-based, respectively.
+	Label   string // Label for the key.
+	Secret  string // String representation of base32 encoded integer.
 	Issuer  string // The issuer of the key.
-	Algo    string // The hash algorithm used in the HMAC. 'SHA1', 'SHA256', 'SHA512', and 'MD5' are supported.
+	Algo    string // The hash algorithm used in the HMAC.
 	Digits  int    // The length of the code. 6 or 8 are acceptable.
 	Period  int    // The number of seconds the code is valid for. Applies only to 'totp'.
 	Counter int    // The initial counter value. Applies only to 'hotp'.
