@@ -159,3 +159,18 @@ func TestHotpString(t *testing.T) {
 		t.Error(uri)
 	}
 }
+
+func TestGetHotpCode(t *testing.T) {
+	key, _ := NewHotp(
+		"label",
+		"MFRGGZDFMZTWQ2LK",
+		"issuer",
+		sha1.New,
+		6,
+		0,
+	)
+	code, err := key.GetHotpCode(1)
+	if err != nil || code != "765705" {
+		t.Error("Code did not match for first interval.")
+	}
+}
