@@ -27,7 +27,7 @@ func (e keyError) Error() string {
 	return fmt.Sprintf("keyError - %v - %v", e.param, e.msg)
 }
 
-// Defines a key per otpauth specifications. See https://code.google.com/p/google-authenticator/wiki/KeyFormat for more information.
+// Defines all parameter required for code generation, including useful metadata.
 type Key struct {
 	Method  string // Initialization method. Acceptable values are either 'totp' or 'hotp' for time-based or counter-based, respectively.
 	Label   string // Label for the key.
@@ -155,7 +155,7 @@ func (k Key) IsValid() (bool, error) {
 	return true, nil
 }
 
-// Returns the string representation of the Key.
+// Returns the string representation of the Key according to the Google Authenticator KeyUriFormat. See https://code.google.com/p/google-authenticator/wiki/KeyUriFormat for more detail.
 func (k Key) String() string {
 	markup := "otpauth://{{.Method}}/{{.Label}}?Secret={{.Secret}}"
 	if len(k.Issuer) > 0 {
