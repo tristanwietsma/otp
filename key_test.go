@@ -4,6 +4,16 @@ import (
 	"testing"
 )
 
+func TestKeyError(t *testing.T) {
+	err := KeyError{
+		param: "param",
+		msg:   "msg",
+	}
+	if err.Error() != "KeyError - param - msg" {
+		t.Fail()
+	}
+}
+
 func TestInvalidMethod(t *testing.T) {
 	key := Key{
 		Method: "crypto!",
@@ -128,6 +138,22 @@ func TestTotpString(t *testing.T) {
 
 	uri := key.String()
 	if uri != "otpauth://totp/label?Secret=MFRGGZDFMZTWQ2LK&Issuer=issuer&Algo=SHA1&Digits=6&Period=30" {
+		t.Error(uri)
+	}
+}
+
+func TestHotpString(t *testing.T) {
+	key, _ := NewHotp(
+		"label",
+		"MFRGGZDFMZTWQ2LK",
+		"issuer",
+		"sha1",
+		6,
+		42,
+	)
+
+	uri := key.String()
+	if uri != "otpauth://hotp/label?Secret=MFRGGZDFMZTWQ2LK&Issuer=issuer&Algo=SHA1&Digits=6&Counter=42" {
 		t.Error(uri)
 	}
 }
