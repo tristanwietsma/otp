@@ -35,6 +35,29 @@ func TestInvalidLabel(t *testing.T) {
 	}
 }
 
+func TestMissingSecret(t *testing.T) {
+	key := Key{
+		Method: "totp",
+		Label:  "t@w",
+	}
+	v, _ := key.IsValid()
+	if v == true {
+		t.Fail()
+	}
+}
+
+func TestBadSecret(t *testing.T) {
+	key := Key{
+		Method: "totp",
+		Label:  "t@w",
+		Secret: "abc123",
+	}
+	v, _ := key.IsValid()
+	if v == true {
+		t.Fail()
+	}
+}
+
 func TestTotpString(t *testing.T) {
 	key, _ := NewTotp(
 		"label",
