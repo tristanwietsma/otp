@@ -18,10 +18,10 @@ func GetInterval(period int64) int64 {
 }
 
 // Returns a one-time password.
-// secret is a Base32 encoded HMAC key.
-// iv is the initialization value for the HMAC.
-// hashFunc is the hashing function to use in the HMAC. See HASHES for list of valid functions.
-// digits is the length of digits to display in the output code.
+// "secret" is a Base32 encoded HMAC key.
+// "iv" is the initialization value for the HMAC.
+// "hashFunc" is the hashing function to use in the HMAC. See otp.HASHES.
+// "digits" is the length of digits to display in the output code.
 //
 // Example:
 //      code, err := GetCode("MFRGGZDFMZTWQ2LK", 1, sha1.New, 6)
