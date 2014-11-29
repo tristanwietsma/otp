@@ -10,9 +10,10 @@ import (
 	"time"
 )
 
+// Type to represent <lib>.New function, where "lib" is implements Go's hash library.
 type Hash func() hash.Hash
 
-// Returns the current time interval.
+// Returns the current time interval as unix epoch divided by "period".
 func GetInterval(period int64) int64 {
 	return time.Now().Unix() / period
 }
