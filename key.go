@@ -13,7 +13,7 @@ import (
 )
 
 var METHODS = []string{"totp", "hotp"}
-var HASHES = []string{"SHA1", "SHA256", "SHA512", "MD5"}
+var HASHES = []Hash{sha1.New, sha256.New, sha512.New, md5.New}
 
 type KeyError struct {
 	param string
@@ -30,24 +30,14 @@ type Key struct {
 	Label   string // Label for the key.
 	Secret  string // String representation of base32 encoded integer.
 	Issuer  string // The issuer of the key.
-	Algo    string // The hash algorithm used in the HMAC.
+	Algo    Hash   // The hash algorithm used in the HMAC. SHA1, SHA256, SHA512, and MD5 are supported.
 	Digits  int    // The length of the code. 6 or 8 are acceptable.
 	Period  int    // The number of seconds the code is valid for. Applies only to 'totp'.
 	Counter int    // The initial counter value. Applies only to 'hotp'.
 }
 
 func (k Key) GetHotpCode(iv int64) (string, error) {
-	var h hashFunc
-	if k.Algo == "SHA1" {
-		h = sha1.New
-	} else if k.Algo == "SHA256" {
-		h = sha256.New
-	} else if k.Algo == "SHA512" {
-		h = sha512.New
-	} else {
-		h = md5.New
-	}
-	code, err := GetCode(k.Secret, iv, h, k.Digits)
+	code, err := GetCode(k.Secret, iv, k.Algo, k.Digits)
 	return code, err
 }
 
@@ -127,10 +117,10 @@ func (k Key) IsValid() (bool, error) {
 	   check algo
 	*/
 
-	if !stringInSlice(k.Algo, HASHES) {
+	if !hashInSlice(k.Algo, HASHES) {
 		keyErr := KeyError{
 			"Algo",
-			"Must match one of {" + strings.Join(HASHES, ", ") + "}",
+			"Must match one of {sha1, sha256, sha512, md5}",
 		}
 		return false, keyErr
 	}
@@ -169,7 +159,11 @@ func (k Key) String() string {
 		markup = markup + "&Issuer={{.Issuer}}"
 	}
 
-	markup = markup + "&Algo={{.Algo}}&Digits={{.Digits}}"
+	// reflect out the name of the hash function
+	hashName := strings.Split(strings.Split(getFuncName(k.Algo), ".")[0], "/")[1]
+	markup = markup + "&Algo=" + strings.ToUpper(hashName)
+
+	markup = markup + "&Digits={{.Digits}}"
 
 	if k.Method == "totp" {
 		markup = markup + "&Period={{.Period}}"

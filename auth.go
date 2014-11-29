@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-type hashFunc func() hash.Hash
+type Hash func() hash.Hash
 
 // Returns the current time interval.
 func GetInterval(period int64) int64 {
@@ -18,7 +18,7 @@ func GetInterval(period int64) int64 {
 }
 
 // Returns the TOTP/HOTP code.
-func GetCode(secret string, iv int64, hasher hashFunc, digits int) (string, error) {
+func GetCode(secret string, iv int64, h Hash, digits int) (string, error) {
 	key, err := base32.StdEncoding.DecodeString(secret)
 	if err != nil {
 		return "", err
@@ -27,15 +27,15 @@ func GetCode(secret string, iv int64, hasher hashFunc, digits int) (string, erro
 	msg := bytes.Buffer{}
 	_ = binary.Write(&msg, binary.BigEndian, iv)
 
-	mac := hmac.New(hasher, key)
+	mac := hmac.New(h, key)
 	mac.Write(msg.Bytes())
-	hash := mac.Sum(nil)
+	digest := mac.Sum(nil)
 
-	offset := hash[len(hash)-1] & 0xF
-	truncatedHash := hash[offset : offset+4]
+	offset := digest[len(digest)-1] & 0xF
+	trunc := digest[offset : offset+4]
 
 	var code int32
-	truncBytes := bytes.NewBuffer(truncatedHash)
+	truncBytes := bytes.NewBuffer(trunc)
 	_ = binary.Read(truncBytes, binary.BigEndian, &code)
 
 	code = (code & 0x7FFFFFFF) % 1000000

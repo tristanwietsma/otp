@@ -1,6 +1,8 @@
 package otp
 
 import (
+	"code.google.com/p/go.crypto/md4"
+	"crypto/sha1"
 	"testing"
 )
 
@@ -87,7 +89,7 @@ func TestBadAlgo(t *testing.T) {
 		Label:  "t@w",
 		Secret: "MFRGGZDFMZTWQ2LK",
 		Issuer: "issuer",
-		Algo:   "blowfish",
+		Algo:   md4.New,
 	}
 	v, _ := key.IsValid()
 	if v == true {
@@ -101,7 +103,7 @@ func TestBadDigits(t *testing.T) {
 		Label:  "t@w",
 		Secret: "MFRGGZDFMZTWQ2LK",
 		Issuer: "issuer",
-		Algo:   "SHA1",
+		Algo:   sha1.New,
 		Digits: 99,
 	}
 	v, _ := key.IsValid()
@@ -116,7 +118,7 @@ func TestBadPeriod(t *testing.T) {
 		Label:  "t@w",
 		Secret: "MFRGGZDFMZTWQ2LK",
 		Issuer: "issuer",
-		Algo:   "SHA1",
+		Algo:   sha1.New,
 		Digits: 6,
 		Period: -42,
 	}
@@ -131,7 +133,7 @@ func TestTotpString(t *testing.T) {
 		"label",
 		"MFRGGZDFMZTWQ2LK",
 		"issuer",
-		"sha1",
+		sha1.New,
 		6,
 		30,
 	)
@@ -147,7 +149,7 @@ func TestHotpString(t *testing.T) {
 		"label",
 		"MFRGGZDFMZTWQ2LK",
 		"issuer",
-		"sha1",
+		sha1.New,
 		6,
 		42,
 	)
