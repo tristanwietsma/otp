@@ -174,3 +174,17 @@ func TestGetHotpCode(t *testing.T) {
 		t.Error("Code did not match for first interval.")
 	}
 }
+
+func TestSmokeGetTotpCode(t *testing.T) {
+	key, _ := NewTotp(
+		"label",
+		"MFRGGZDFMZTWQ2LK",
+		"issuer",
+		sha1.New,
+		6,
+		30,
+	)
+	if _, err := key.GetTotpCode(); err != nil {
+		t.Fail()
+	}
+}
