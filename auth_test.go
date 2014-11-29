@@ -17,25 +17,25 @@ func TestGetCode(t *testing.T) {
 	// https://github.com/tadeck/onetimepass
 	code, err := GetCode("MFRGGZDFMZTWQ2LK", 1, sha1.New, 6)
 	if err != nil || code != "765705" {
-		t.Error("Code did not match for first interval.")
+		t.Errorf("Code did not match for first interval:\n%v\n%v", code, err)
 	}
 
 	code, err = GetCode("MFRGGZDFMZTWQ2LK", 2, sha1.New, 6)
 	if err != nil || code != "816065" {
-		t.Error("Code did not match for second interval.")
+		t.Errorf("Code did not match for second interval:\n%v\n%v", code, err)
 	}
 }
 
 func TestBadSecretInGetCode(t *testing.T) {
-	_, err := GetCode("abc123", 1, sha1.New, 6)
+	code, err := GetCode("abc123", 1, sha1.New, 6)
 	if err == nil {
-		t.Error("Decoding worked for bad base32.")
+		t.Errorf("Decoding worked for bad base32:\n%v\n%v", code, err)
 	}
 }
 
 func TestShortDigits(t *testing.T) {
-	code, _ := GetCode("MFRGGZDFMZTWQ2LK", 19, sha1.New, 6)
-	if len(code) != 6 {
-		t.Fail()
+	code, err := GetCode("MFRGGZDFMZTWQ2LK", 19, sha1.New, 6)
+	if len(code) != 6 || err != nil {
+		t.Errorf("Code length is not 6 digits as expected.\n%v\n%v", code, err)
 	}
 }

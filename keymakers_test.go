@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func TestNewTotp(t *testing.T) {
-	if _, err := NewTotp(
+func TestNewTOTPKey(t *testing.T) {
+	if _, err := NewTOTPKey(
 		"label",
 		"MFRGGZDFMZTWQ2LK",
 		"issuer",
@@ -19,7 +19,7 @@ func TestNewTotp(t *testing.T) {
 }
 
 func TestNewBadTotp(t *testing.T) {
-	if _, err := NewTotp(
+	if _, err := NewTOTPKey(
 		"label",
 		"MifdasfsfdsfFRGGZDFMZTWQ2LK",
 		"issuer",
@@ -32,7 +32,7 @@ func TestNewBadTotp(t *testing.T) {
 }
 
 func TestNewBadHotp(t *testing.T) {
-	if _, err := NewHotp(
+	if _, err := NewHOTPKey(
 		"label",
 		"MFRfadfdssdGGZDFMZTWQ2LK",
 		"issuer",
@@ -44,8 +44,8 @@ func TestNewBadHotp(t *testing.T) {
 	}
 }
 
-func TestNewHotp(t *testing.T) {
-	if _, err := NewHotp(
+func TestNewHOTPKey(t *testing.T) {
+	if _, err := NewHOTPKey(
 		"label",
 		"MFRGGZDFMZTWQ2LK",
 		"issuer",

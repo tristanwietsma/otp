@@ -23,13 +23,13 @@ func newKey(method, label, secret, issuer string, algo Hash, digits, period, cou
 }
 
 // Returns a TOTP Key.
-func NewTotp(label, secret, issuer string, algo Hash, digits, period int) (*Key, error) {
+func NewTOTPKey(label, secret, issuer string, algo Hash, digits, period int) (*Key, error) {
 	k, err := newKey("totp", label, secret, issuer, algo, digits, period, 0)
 	return k, err
 }
 
 // Returns a HOTP Key.
-func NewHotp(label, secret, issuer string, algo Hash, digits, counter int) (*Key, error) {
+func NewHOTPKey(label, secret, issuer string, algo Hash, digits, counter int) (*Key, error) {
 	k, err := newKey("hotp", label, secret, issuer, algo, digits, 0, counter)
 	return k, err
 }
