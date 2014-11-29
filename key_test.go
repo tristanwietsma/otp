@@ -1,6 +1,8 @@
 package otp
 
 import (
+	"code.google.com/p/go.crypto/md4"
+	"crypto/sha1"
 	"testing"
 )
 
@@ -87,7 +89,7 @@ func TestBadAlgo(t *testing.T) {
 		Label:  "t@w",
 		Secret: "MFRGGZDFMZTWQ2LK",
 		Issuer: "issuer",
-		Algo:   "blowfish",
+		Algo:   md4.New,
 	}
 	v, _ := key.IsValid()
 	if v == true {
@@ -101,7 +103,7 @@ func TestBadDigits(t *testing.T) {
 		Label:  "t@w",
 		Secret: "MFRGGZDFMZTWQ2LK",
 		Issuer: "issuer",
-		Algo:   "SHA1",
+		Algo:   sha1.New,
 		Digits: 99,
 	}
 	v, _ := key.IsValid()
@@ -116,7 +118,7 @@ func TestBadPeriod(t *testing.T) {
 		Label:  "t@w",
 		Secret: "MFRGGZDFMZTWQ2LK",
 		Issuer: "issuer",
-		Algo:   "SHA1",
+		Algo:   sha1.New,
 		Digits: 6,
 		Period: -42,
 	}
@@ -131,7 +133,7 @@ func TestTotpString(t *testing.T) {
 		"label",
 		"MFRGGZDFMZTWQ2LK",
 		"issuer",
-		"sha1",
+		sha1.New,
 		6,
 		30,
 	)
@@ -147,7 +149,7 @@ func TestHotpString(t *testing.T) {
 		"label",
 		"MFRGGZDFMZTWQ2LK",
 		"issuer",
-		"sha1",
+		sha1.New,
 		6,
 		42,
 	)
@@ -155,5 +157,34 @@ func TestHotpString(t *testing.T) {
 	uri := key.String()
 	if uri != "otpauth://hotp/label?Secret=MFRGGZDFMZTWQ2LK&Issuer=issuer&Algo=SHA1&Digits=6&Counter=42" {
 		t.Error(uri)
+	}
+}
+
+func TestGetHotpCode(t *testing.T) {
+	key, _ := NewHotp(
+		"label",
+		"MFRGGZDFMZTWQ2LK",
+		"issuer",
+		sha1.New,
+		6,
+		0,
+	)
+	code, err := key.GetHotpCode(1)
+	if err != nil || code != "765705" {
+		t.Error("Code did not match for first interval.")
+	}
+}
+
+func TestSmokeGetTotpCode(t *testing.T) {
+	key, _ := NewTotp(
+		"label",
+		"MFRGGZDFMZTWQ2LK",
+		"issuer",
+		sha1.New,
+		6,
+		30,
+	)
+	if _, err := key.GetTotpCode(); err != nil {
+		t.Fail()
 	}
 }

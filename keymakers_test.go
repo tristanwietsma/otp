@@ -1,6 +1,7 @@
 package otp
 
 import (
+	"crypto/sha1"
 	"testing"
 )
 
@@ -9,11 +10,11 @@ func TestNewTotp(t *testing.T) {
 		"label",
 		"MFRGGZDFMZTWQ2LK",
 		"issuer",
-		"sha1",
+		sha1.New,
 		6,
 		30,
 	); err != nil {
-		t.Error("failed to build new totp key")
+		t.Errorf("failed to build new totp key:\n%v", err)
 	}
 }
 
@@ -22,7 +23,7 @@ func TestNewBadTotp(t *testing.T) {
 		"label",
 		"MifdasfsfdsfFRGGZDFMZTWQ2LK",
 		"issuer",
-		"sha1",
+		sha1.New,
 		6,
 		30,
 	); err == nil {
@@ -35,7 +36,7 @@ func TestNewBadHotp(t *testing.T) {
 		"label",
 		"MFRfadfdssdGGZDFMZTWQ2LK",
 		"issuer",
-		"sha1",
+		sha1.New,
 		6,
 		30,
 	); err != nil {
@@ -48,7 +49,7 @@ func TestNewHotp(t *testing.T) {
 		"label",
 		"MFRGGZDFMZTWQ2LK",
 		"issuer",
-		"sha1",
+		sha1.New,
 		6,
 		30,
 	); err != nil {
