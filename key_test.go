@@ -11,7 +11,7 @@ func TestkeyError(t *testing.T) {
 		param: "param",
 		msg:   "msg",
 	}
-	if err.Error() != "keyError - param - msg" {
+	if err.Error() != "KeyError - param - msg" {
 		t.Fail()
 	}
 }

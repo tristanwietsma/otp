@@ -24,7 +24,7 @@ type keyError struct {
 }
 
 func (e keyError) Error() string {
-	return fmt.Sprintf("keyError - %v - %v", e.param, e.msg)
+	return fmt.Sprintf("KeyError - %v - %v", e.param, e.msg)
 }
 
 // Defines all parameter required for code generation, including useful metadata.
