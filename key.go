@@ -2,6 +2,10 @@ package otp
 
 import (
 	"bytes"
+	"crypto/md5"
+	"crypto/sha1"
+	"crypto/sha256"
+	"crypto/sha512"
 	"encoding/base32"
 	"fmt"
 	"strings"
@@ -30,6 +34,22 @@ type Key struct {
 	Digits  int    // The length of the code. 6 or 8 are acceptable.
 	Period  int    // The number of seconds the code is valid for. Applies only to 'totp'.
 	Counter int    // The initial counter value. Applies only to 'hotp'.
+}
+
+func (k Key) GetTotpCode() (string, error) {
+	iv := GetInterval(int64(k.Period))
+	var h hashFunc
+	if k.Algo == "SHA1" {
+		h = sha1.New
+	} else if k.Algo == "SHA256" {
+		h = sha256.New
+	} else if k.Algo == "SHA512" {
+		h = sha512.New
+	} else {
+		h = md5.New
+	}
+	code, err := GetCode(k.Secret, iv, h, k.Digits)
+	return code, err
 }
 
 func (k Key) IsValid() (bool, error) {
