@@ -2,7 +2,10 @@ package otp
 
 import (
 	"code.google.com/p/go.crypto/md4"
+	"crypto/md5"
 	"crypto/sha1"
+	"crypto/sha256"
+	"crypto/sha512"
 	"testing"
 )
 
@@ -204,8 +207,6 @@ func TestFromUri(t *testing.T) {
 		k.Period == 30 {
 		t.Errorf("Parse failed: %v", k)
 	}
-
-	t.Errorf("%v", k)
 }
 
 func TestParseBadUri(t *testing.T) {
@@ -213,5 +214,33 @@ func TestParseBadUri(t *testing.T) {
 	uri := "abcotpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer"
 	if err := k.FromURI(uri); err == nil {
 		t.Errorf("Parse URI should have failed")
+	}
+}
+
+func TestParseAlgo(t *testing.T) {
+	k := Key{}
+
+	// SHA1
+	uri := "otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer&algo=SHA1"
+	if err := k.FromURI(uri); getFuncName(k.Algo) != getFuncName(sha1.New) && err != nil {
+		t.Errorf("Parse URI should have parse SHA1\n%v", err)
+	}
+
+	// SHA256
+	uri = "otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer&algo=SHA256"
+	if err := k.FromURI(uri); getFuncName(k.Algo) != getFuncName(sha256.New) && err != nil {
+		t.Errorf("Parse URI should have parse SHA256\n%v", err)
+	}
+
+	// SHA512
+	uri = "otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer&algo=SHA512"
+	if err := k.FromURI(uri); getFuncName(k.Algo) != getFuncName(sha512.New) && err != nil {
+		t.Errorf("Parse URI should have parse SHA512\n%v", err)
+	}
+
+	// MD5
+	uri = "otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer&algo=MD5"
+	if err := k.FromURI(uri); getFuncName(k.Algo) != getFuncName(md5.New) && err != nil {
+		t.Errorf("Parse URI should have parse MD5\n%v", err)
 	}
 }
