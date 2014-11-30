@@ -197,8 +197,8 @@ func (k *Key) FromURI(uri string) error {
 
 	// try to get algo; else default to SHA1
 	groups = algoRegex.FindStringSubmatch(uri)
-	if len(groups) == 1 {
-		switch groups[0] {
+	if len(groups) == 2 {
+		switch groups[1] {
 		case "SHA1":
 			(*k).Algo = sha1.New
 		case "SHA256":
