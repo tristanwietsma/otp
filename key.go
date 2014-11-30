@@ -27,6 +27,8 @@ var (
 	algoRegex = regexp.MustCompile(
 		`(?:&|\?)algo=(SHA1|SHA256|SHA512|MD5)(?:&|$)`)
 	digitsRegex = regexp.MustCompile(
+		`(?:&|\?)digits=([0-9]*)(?:&|$)`)
+	validDigitsRegex = regexp.MustCompile(
 		`(?:&|\?)digits=(6|8)(?:&|$)`)
 	periodRegex = regexp.MustCompile(
 		`totp.*(?:&|\?)period=([0-9]*)(?:&|$)`)
@@ -214,8 +216,13 @@ func (k *Key) FromURI(uri string) error {
 
 	// try to digits; else 6
 	groups = digitsRegex.FindStringSubmatch(uri)
-	if len(groups) == 1 {
-		(*k).Digits, _ = strconv.Atoi(groups[0])
+	if len(groups) == 2 {
+		groups = validDigitsRegex.FindStringSubmatch(uri)
+		if len(groups) == 2 {
+			(*k).Digits, _ = strconv.Atoi(groups[1])
+		} else {
+			return KeyError{"Digits", "6 or 8 are valid"}
+		}
 	} else {
 		(*k).Digits = 6
 	}
