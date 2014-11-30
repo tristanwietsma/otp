@@ -139,7 +139,7 @@ func TestTOTPString(t *testing.T) {
 	)
 
 	uri := key.ToURI()
-	if uri != "otpauth://totp/label?Secret=MFRGGZDFMZTWQ2LK&Issuer=issuer&Algo=SHA1&Digits=6&Period=30" {
+	if uri != "otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=issuer&algo=SHA1&digits=6&period=30" {
 		t.Error(uri)
 	}
 }
@@ -155,7 +155,7 @@ func TestHOTPString(t *testing.T) {
 	)
 
 	uri := key.ToURI()
-	if uri != "otpauth://hotp/label?Secret=MFRGGZDFMZTWQ2LK&Issuer=issuer&Algo=SHA1&Digits=6&Counter=42" {
+	if uri != "otpauth://hotp/label?secret=MFRGGZDFMZTWQ2LK&issuer=issuer&algo=SHA1&digits=6&counter=42" {
 		t.Error(uri)
 	}
 }
@@ -185,5 +185,23 @@ func TestKeyGetCode(t *testing.T) {
 	)
 	if _, err := tkey.GetCode(1); err != nil {
 		t.Fail()
+	}
+}
+
+func TestFromUri(t *testing.T) {
+	k := Key{}
+	uri := "otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer"
+	if err := k.FromURI(uri); err != nil {
+		t.Errorf("Parse URI failed:\n%v", err)
+	}
+
+	if k.Method != "totp" &&
+		k.Label != "label" &&
+		k.Secret != "MFRGGZDFMZTWQ2LK" &&
+		k.Issuer != "theIssuer" &&
+		getFuncName(k.Algo) != getFuncName(sha1.New) &&
+		k.Digits == 6 &&
+		k.Period == 30 {
+		t.Errorf("Parse failed: %v", k)
 	}
 }

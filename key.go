@@ -7,7 +7,8 @@ import (
 	"crypto/sha256"
 	"crypto/sha512"
 	"encoding/base32"
-	"fmt"
+	"regexp"
+	"strconv"
 	"strings"
 	"text/template"
 )
@@ -18,16 +19,18 @@ var METHODS = []string{"totp", "hotp"}
 // Supported values algorithms for `Key.Algo`.
 var HASHES = []Hash{sha1.New, sha256.New, sha512.New, md5.New}
 
-// Custom error type for Key related errors. Generally refers to validation errors.
-type KeyError struct {
-	param string
-	msg   string
-}
-
-// Renders the error string.
-func (e KeyError) Error() string {
-	return fmt.Sprintf("KeyError - %v - %v", e.param, e.msg)
-}
+var (
+	keyURIregex = regexp.MustCompile(
+		`otpauth:\/\/(totp|hotp)\/([^\/?]*)\?.*secret=([A-Z2-7]*)(?:&|$)`)
+	issuerRegex = regexp.MustCompile(
+		`\?.*issuer=([^\/?]*)(?:&|$)`)
+	algoRegex = regexp.MustCompile(
+		`\?.*algo=(SHA1|SHA256|SHA512|MD5)(?:&|$)`)
+	digitsRegex = regexp.MustCompile(
+		`\?.*digits=(6|8)(?:&|$)`)
+	periodRegex = regexp.MustCompile(
+		`totp.*\?.*period=([0-9]*)(?:&|$)`)
+)
 
 // Defines set of parameters required for code generation, including metadata.
 type Key struct {
@@ -148,27 +151,82 @@ func (k Key) IsValid() (bool, error) {
 
 // Returns the string representation of the Key according to the Google Authenticator KeyUriFormat. See https://code.google.com/p/google-authenticator/wiki/KeyUriFormat for more detail.
 func (k Key) ToURI() string {
-	markup := "otpauth://{{.Method}}/{{.Label}}?Secret={{.Secret}}"
+	markup := "otpauth://{{.Method}}/{{.Label}}?secret={{.Secret}}"
 	if len(k.Issuer) > 0 {
-		markup = markup + "&Issuer={{.Issuer}}"
+		markup = markup + "&issuer={{.Issuer}}"
 	}
 
 	// reflect out the name of the hash function
 	hashName := strings.Split(strings.Split(getFuncName(k.Algo), ".")[0], "/")[1]
-	markup = markup + "&Algo=" + strings.ToUpper(hashName)
+	markup = markup + "&algo=" + strings.ToUpper(hashName)
 
-	markup = markup + "&Digits={{.Digits}}"
+	markup = markup + "&digits={{.Digits}}"
 
 	if k.Method == "totp" {
-		markup = markup + "&Period={{.Period}}"
+		markup = markup + "&period={{.Period}}"
 	}
 
 	if k.Method == "hotp" {
-		markup = markup + "&Counter={{.Counter}}"
+		markup = markup + "&counter={{.Counter}}"
 	}
 
 	tmpl, _ := template.New("uri").Parse(markup)
 	var uri bytes.Buffer
 	tmpl.Execute(&uri, k)
 	return uri.String()
+}
+
+func (k *Key) FromURI(uri string) error {
+
+	// requirements
+	if !keyURIregex.MatchString(uri) {
+		return KeyError{"FromURI", "Invalid format."}
+	}
+	groups := keyURIregex.FindStringSubmatch(uri)
+	(*k).Method = groups[1]
+	(*k).Label = groups[2]
+	(*k).Secret = groups[3]
+
+	// issuer
+	groups = issuerRegex.FindStringSubmatch(uri)
+	if len(groups) == 1 {
+		(*k).Issuer = groups[0]
+	}
+
+	// try to get algo; else default to SHA1
+	groups = algoRegex.FindStringSubmatch(uri)
+	if len(groups) == 1 {
+		switch groups[0] {
+		case "SHA1":
+			(*k).Algo = sha1.New
+		case "SHA256":
+			(*k).Algo = sha256.New
+		case "SHA512":
+			(*k).Algo = sha512.New
+		case "MD5":
+			(*k).Algo = md5.New
+		}
+	} else {
+		(*k).Algo = sha1.New
+	}
+
+	// try to digits; else 6
+	groups = digitsRegex.FindStringSubmatch(uri)
+	if len(groups) == 1 {
+		(*k).Digits, _ = strconv.Atoi(groups[0])
+	} else {
+		(*k).Digits = 6
+	}
+
+	// if totp, try to get a period; else default to 30
+	groups = periodRegex.FindStringSubmatch(uri)
+	if len(groups) == 1 {
+		(*k).Period, _ = strconv.Atoi(groups[0])
+	} else {
+		(*k).Period = 30
+	}
+
+	// if hotp, try to get a counter
+
+	return nil
 }
