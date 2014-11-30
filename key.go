@@ -30,6 +30,8 @@ var (
 		`\?.*digits=(6|8)(?:&|$)`)
 	periodRegex = regexp.MustCompile(
 		`totp.*\?.*period=([0-9]*)(?:&|$)`)
+	counterRegex = regexp.MustCompile(
+		`hotp.*\?.*counter=([0-9]*)(?:&|$)`)
 )
 
 // Defines set of parameters required for code generation, including metadata.
@@ -227,6 +229,10 @@ func (k *Key) FromURI(uri string) error {
 	}
 
 	// if hotp, try to get a counter
+	groups = counterRegex.FindStringSubmatch(uri)
+	if len(groups) == 1 {
+		(*k).Counter, _ = strconv.Atoi(groups[0])
+	}
 
 	return nil
 }
