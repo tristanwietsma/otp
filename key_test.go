@@ -215,6 +215,11 @@ func TestParseBadUri(t *testing.T) {
 	if err := k.FromURI(uri); err == nil {
 		t.Errorf("Parse URI should have failed")
 	}
+
+	uri = "otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=the/Issuer"
+	if err := k.FromURI(uri); err == nil {
+		t.Errorf("Parse URI should have failed")
+	}
 }
 
 func TestParseAlgo(t *testing.T) {
