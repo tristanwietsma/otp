@@ -62,4 +62,10 @@ func TestNewKeyFromURI(t *testing.T) {
 	if _, err := NewKey(uri); err != nil {
 		t.Errorf("Constructor failed:\n%v", err)
 	}
+
+	uri = "blahblah"
+	if _, err := NewKey(uri); err == nil {
+		t.Error("Should have failed...")
+	}
+
 }
