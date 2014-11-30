@@ -1,4 +1,4 @@
-[![otp.go](https://raw.githubusercontent.com/tristanwietsma/otp.go/master/artwork/otp.png)
+![otp.go](https://raw.githubusercontent.com/tristanwietsma/otp.go/master/artwork/otp.png)
 
 # otp.go: One-Time Passwords in Go
 
