@@ -25,7 +25,7 @@ var (
 	issuerRegex = regexp.MustCompile(
 		`issuer=([^\/&]*)`)
 	algoRegex = regexp.MustCompile(
-		`(?:&|\?)algo=(SHA1|SHA256|SHA512|MD5)(?:&|$)`)
+		`(?:&|\?)algo=(SHA1|SHA256|SHA512|MD5|sha1|sha256|sha512|md5)(?:&|$)`)
 	digitsRegex = regexp.MustCompile(
 		`(?:&|\?)digits=([0-9]*)(?:&|$)`)
 	validDigitsRegex = regexp.MustCompile(
@@ -200,7 +200,7 @@ func (k *Key) FromURI(uri string) error {
 	// try to get algo; else default to SHA1
 	groups = algoRegex.FindStringSubmatch(uri)
 	if len(groups) == 2 {
-		switch groups[1] {
+		switch strings.ToUpper(groups[1]) {
 		case "SHA1":
 			(*k).Algo = sha1.New
 		case "SHA256":

@@ -243,6 +243,31 @@ func TestParseAlgo(t *testing.T) {
 	if err := k.FromURI(uri); getFuncName(k.Algo) != getFuncName(md5.New) && err != nil {
 		t.Errorf("Parse URI should have parse MD5\n%v", err)
 	}
+
+	// sha1
+	uri = "otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer&algo=sha1"
+	if err := k.FromURI(uri); getFuncName(k.Algo) != getFuncName(sha1.New) && err != nil {
+		t.Errorf("Parse URI should have parse SHA1\n%v", err)
+	}
+
+	// sha256
+	uri = "otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer&algo=sha256&nonsense=1"
+	if err := k.FromURI(uri); getFuncName(k.Algo) != getFuncName(sha256.New) && err != nil {
+		t.Errorf("Parse URI should have parse SHA256\n%v", err)
+	}
+
+	// sha512
+	uri = "otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer&algo=sha512"
+	if err := k.FromURI(uri); getFuncName(k.Algo) != getFuncName(sha512.New) && err != nil {
+		t.Errorf("Parse URI should have parse SHA512\n%v", err)
+	}
+
+	// md5
+	uri = "otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer&algo=md5"
+	if err := k.FromURI(uri); getFuncName(k.Algo) != getFuncName(md5.New) && err != nil {
+		t.Errorf("Parse URI should have parse MD5\n%v", err)
+	}
+
 }
 
 func TestParseDigits(t *testing.T) {
