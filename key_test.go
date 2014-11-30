@@ -205,3 +205,11 @@ func TestFromUri(t *testing.T) {
 		t.Errorf("Parse failed: %v", k)
 	}
 }
+
+func TestParseBadUri(t *testing.T) {
+	k := Key{}
+	uri := "abcotpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer"
+	if err := k.FromURI(uri); err == nil {
+		t.Errorf("Parse URI should have failed")
+	}
+}

@@ -21,7 +21,7 @@ var HASHES = []Hash{sha1.New, sha256.New, sha512.New, md5.New}
 
 var (
 	keyURIregex = regexp.MustCompile(
-		`otpauth:\/\/(totp|hotp)\/([^\/?]*)\?.*secret=([A-Z2-7]*)(?:&|$)`)
+		`^otpauth:\/\/(totp|hotp)\/([^\/?]*)\?.*secret=([A-Z2-7]*)(?:&|$)`)
 	issuerRegex = regexp.MustCompile(
 		`\?.*issuer=([^\/?]*)(?:&|$)`)
 	algoRegex = regexp.MustCompile(
