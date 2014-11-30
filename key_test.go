@@ -204,6 +204,8 @@ func TestFromUri(t *testing.T) {
 		k.Period == 30 {
 		t.Errorf("Parse failed: %v", k)
 	}
+
+	t.Errorf("%v", k)
 }
 
 func TestParseBadUri(t *testing.T) {

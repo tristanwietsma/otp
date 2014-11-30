@@ -23,15 +23,15 @@ var (
 	keyURIregex = regexp.MustCompile(
 		`^otpauth:\/\/(totp|hotp)\/([^\/?]*)\?.*secret=([A-Z2-7]*)(?:&|$)`)
 	issuerRegex = regexp.MustCompile(
-		`\?.*issuer=([^\/?]*)(?:&|$)`)
+		`issuer=([^\/&]*)`)
 	algoRegex = regexp.MustCompile(
-		`\?.*algo=(SHA1|SHA256|SHA512|MD5)(?:&|$)`)
+		`(?:&|\?)algo=(SHA1|SHA256|SHA512|MD5)(?:&|$)`)
 	digitsRegex = regexp.MustCompile(
-		`\?.*digits=(6|8)(?:&|$)`)
+		`(?:&|\?)digits=(6|8)(?:&|$)`)
 	periodRegex = regexp.MustCompile(
-		`totp.*\?.*period=([0-9]*)(?:&|$)`)
+		`totp.*(?:&|\?)period=([0-9]*)(?:&|$)`)
 	counterRegex = regexp.MustCompile(
-		`hotp.*\?.*counter=([0-9]*)(?:&|$)`)
+		`hotp.*(?:&|\?)counter=([0-9]*)(?:&|$)`)
 )
 
 // Defines set of parameters required for code generation, including metadata.
@@ -191,8 +191,8 @@ func (k *Key) FromURI(uri string) error {
 
 	// issuer
 	groups = issuerRegex.FindStringSubmatch(uri)
-	if len(groups) == 1 {
-		(*k).Issuer = groups[0]
+	if len(groups) == 2 {
+		(*k).Issuer = groups[1]
 	}
 
 	// try to get algo; else default to SHA1
