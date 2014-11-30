@@ -33,3 +33,17 @@ func NewHOTPKey(label, secret, issuer string, algo Hash, digits, counter int) (*
 	k, err := newKey("hotp", label, secret, issuer, algo, digits, 0, counter)
 	return k, err
 }
+
+// Returns a new Key given a OTPAUTH URI.
+func NewKey(uri string) (*Key, error) {
+	k := Key{}
+	if err := k.FromURI(uri); err != nil {
+		return &k, err
+	}
+
+	if _, err := k.IsValid(); err != nil {
+		return &k, err
+	}
+
+	return &k, nil
+}
