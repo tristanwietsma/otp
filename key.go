@@ -229,16 +229,16 @@ func (k *Key) FromURI(uri string) error {
 
 	// if totp, try to get a period; else default to 30
 	groups = periodRegex.FindStringSubmatch(uri)
-	if len(groups) == 1 {
-		(*k).Period, _ = strconv.Atoi(groups[0])
+	if len(groups) == 2 {
+		(*k).Period, _ = strconv.Atoi(groups[1])
 	} else {
 		(*k).Period = 30
 	}
 
 	// if hotp, try to get a counter
 	groups = counterRegex.FindStringSubmatch(uri)
-	if len(groups) == 1 {
-		(*k).Counter, _ = strconv.Atoi(groups[0])
+	if len(groups) == 2 {
+		(*k).Counter, _ = strconv.Atoi(groups[1])
 	}
 
 	return nil

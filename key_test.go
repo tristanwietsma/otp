@@ -264,3 +264,31 @@ func TestParseDigits(t *testing.T) {
 	}
 
 }
+
+func TestParsePeriod(t *testing.T) {
+	k := Key{}
+	uri := "otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&period=42"
+	if err := k.FromURI(uri); err != nil && k.Period != 42 {
+		t.Errorf("Didn't parse period correctly\n%v", err)
+	}
+
+	uri = "otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK"
+	if err := k.FromURI(uri); err != nil && k.Period != 30 {
+		t.Errorf("Didn't parse period correctly\n%v", err)
+	}
+
+}
+
+func TestParseCounter(t *testing.T) {
+	k := Key{}
+	uri := "otpauth://hotp/label?secret=MFRGGZDFMZTWQ2LK&counter=42"
+	if err := k.FromURI(uri); err != nil && k.Counter != 42 {
+		t.Errorf("Didn't parse period correctly\n%v", err)
+	}
+
+	uri = "otpauth://hotp/label?secret=MFRGGZDFMZTWQ2LK"
+	if err := k.FromURI(uri); err != nil && k.Counter != 0 {
+		t.Errorf("Didn't parse period correctly\n%v", err)
+	}
+
+}
