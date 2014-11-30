@@ -180,6 +180,7 @@ func (k Key) ToURI() string {
 	return uri.String()
 }
 
+// Parse OTPAUTH URI into Key attributes.
 func (k *Key) FromURI(uri string) error {
 
 	// requirements
