@@ -21,7 +21,7 @@ var HASHES = []Hash{sha1.New, sha256.New, sha512.New, md5.New}
 
 var (
 	keyURIregex = regexp.MustCompile(
-		`^otpauth:\/\/(totp|hotp)\/([^\/?]*)\?.*secret=([A-Z2-7]*)(?:&|$)`)
+		`^otpauth:\/\/(totp|hotp)\/([^\/?]*)\?.*secret=([A-Z2-7]*)(?:&.*|$)`)
 	issuerRegex = regexp.MustCompile(
 		`issuer=([^\/&]*)`)
 	algoRegex = regexp.MustCompile(
@@ -184,8 +184,13 @@ func (k *Key) FromURI(uri string) error {
 
 	// requirements
 	if !keyURIregex.MatchString(uri) {
-		return KeyError{"FromURI", "Invalid format."}
+		return KeyError{"FromURI", "Invalid format: missing."}
 	}
+
+	if strings.Count(uri, "/") != 3 {
+		return KeyError{"FromURI", "Invalid format: wrong # of '/'"}
+	}
+
 	groups := keyURIregex.FindStringSubmatch(uri)
 	(*k).Method = groups[1]
 	(*k).Label = groups[2]
@@ -221,7 +226,7 @@ func (k *Key) FromURI(uri string) error {
 		if len(groups) == 2 {
 			(*k).Digits, _ = strconv.Atoi(groups[1])
 		} else {
-			return KeyError{"Digits", "6 or 8 are valid"}
+			return KeyError{"FromURI", "6 or 8 digits are valid"}
 		}
 	} else {
 		(*k).Digits = 6
