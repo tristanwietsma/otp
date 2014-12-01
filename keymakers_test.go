@@ -68,4 +68,9 @@ func TestNewKeyFromURI(t *testing.T) {
 		t.Error("Should have failed...")
 	}
 
+	uri = "otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer&algo=SHA512&period=0"
+	if _, err := NewKey(uri); err == nil {
+		t.Error("Should have failed...")
+	}
+
 }
