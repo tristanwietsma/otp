@@ -57,7 +57,7 @@ func (k *Key) FromURI(uri string) error {
 	if u.Path == "" {
 		return errors.New("missing label")
 	}
-	(*k).Label = u.Path[1 : len(u.Path)-1]
+	(*k).Label = u.Path[1:len(u.Path)]
 
 	params := u.Query()
 	(*k).Secret = params.Get("secret")
