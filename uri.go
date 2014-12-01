@@ -43,7 +43,7 @@ func (k Key) ToURI() string {
 // Parse OTPAUTH URI into Key attributes.
 func (k *Key) FromURI(uri string) error {
 
-	u, err := url.Parse(uri)
+	u, err := url.ParseRequestURI(uri)
 	if err != nil {
 		return err
 	}
