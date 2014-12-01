@@ -142,7 +142,7 @@ func TestTOTPString(t *testing.T) {
 	)
 
 	uri := key.ToURI()
-	if uri != "otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=issuer&algo=SHA1&digits=6&period=30" {
+	if uri != "otpauth://totp/label?algo=sha1&digits=6&issuer=issuer&period=30&secret=MFRGGZDFMZTWQ2LK" {
 		t.Error(uri)
 	}
 }
@@ -158,7 +158,7 @@ func TestHOTPString(t *testing.T) {
 	)
 
 	uri := key.ToURI()
-	if uri != "otpauth://hotp/label?secret=MFRGGZDFMZTWQ2LK&issuer=issuer&algo=SHA1&digits=6&counter=42" {
+	if uri != "otpauth://hotp/label?algo=sha1&counter=42&digits=6&issuer=issuer&secret=MFRGGZDFMZTWQ2LK" {
 		t.Error(uri)
 	}
 }
@@ -209,16 +209,43 @@ func TestFromUri(t *testing.T) {
 	}
 }
 
-func TestParseBadUri(t *testing.T) {
+func TestParseBadScheme(t *testing.T) {
 	k := Key{}
 	uri := "abcotpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer"
 	if err := k.FromURI(uri); err == nil {
-		t.Errorf("Parse URI should have failed")
+		t.Errorf("Parse URI should have failed: %v", k)
+	}
+}
+
+func TestParseBadUri(t *testing.T) {
+	k := Key{}
+	uri := "otpauth:totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer"
+	if err := k.FromURI(uri); err == nil {
+		t.Errorf("Parse URI should have failed: %v", k)
 	}
 
-	uri = "otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=the/Issuer"
+	uri = "otpauth//totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer"
 	if err := k.FromURI(uri); err == nil {
-		t.Errorf("Parse URI should have failed")
+		t.Errorf("Parse URI should have failed: %v", k)
+	}
+
+	uri = "otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer&algo=SHA1&digits=X"
+	if err := k.FromURI(uri); err == nil {
+		t.Errorf("Parse URI should have failed: %v", k)
+	}
+
+	uri = "otpauth://hotp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer&algo=SHA1&counter=X"
+	if err := k.FromURI(uri); err == nil {
+		t.Errorf("Parse URI should have failed: %v", k)
+	}
+
+}
+
+func TestBadDigitsInURI(t *testing.T) {
+	k := Key{}
+	uri := "otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&period=X"
+	if err := k.FromURI(uri); err == nil {
+		t.Errorf("Parse URI should have failed: %v", k)
 	}
 }
 
@@ -287,12 +314,6 @@ func TestParseDigits(t *testing.T) {
 	if err := k.FromURI(uri); err != nil && k.Digits != 6 {
 		t.Errorf("Didn't parse digits correctly\n%v", err)
 	}
-
-	uri = "otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&digits=3"
-	if err := k.FromURI(uri); err == nil || k.Digits == 3 {
-		t.Errorf("Didn't parse digits correctly; should have failed\n%v\n%v", err, k)
-	}
-
 }
 
 func TestParsePeriod(t *testing.T) {

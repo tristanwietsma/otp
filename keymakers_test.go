@@ -59,8 +59,8 @@ func TestNewHOTPKey(t *testing.T) {
 
 func TestNewKeyFromURI(t *testing.T) {
 	uri := "otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer&algo=SHA512"
-	if _, err := NewKey(uri); err != nil {
-		t.Errorf("Constructor failed:\n%v", err)
+	if k, err := NewKey(uri); err != nil {
+		t.Errorf("Constructor failed:\n%v\n%v", err, k)
 	}
 
 	uri = "blahblah"
