@@ -94,7 +94,7 @@ func (k *Key) FromURI(uri string) error {
 		if period != "" {
 			p, err := strconv.Atoi(period)
 			if err != nil {
-				errors.New("period is non-integer")
+				return errors.New("period is non-integer")
 			}
 			(*k).Period = p
 		} else {
