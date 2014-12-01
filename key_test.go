@@ -215,11 +215,6 @@ func TestParseBadUri(t *testing.T) {
 	if err := k.FromURI(uri); err == nil {
 		t.Errorf("Parse URI should have failed")
 	}
-
-	uri = "otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=the/Issuer"
-	if err := k.FromURI(uri); err == nil {
-		t.Errorf("Parse URI should have failed")
-	}
 }
 
 func TestParseAlgo(t *testing.T) {
@@ -287,12 +282,6 @@ func TestParseDigits(t *testing.T) {
 	if err := k.FromURI(uri); err != nil && k.Digits != 6 {
 		t.Errorf("Didn't parse digits correctly\n%v", err)
 	}
-
-	uri = "otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&digits=3"
-	if err := k.FromURI(uri); err == nil || k.Digits == 3 {
-		t.Errorf("Didn't parse digits correctly; should have failed\n%v\n%v", err, k)
-	}
-
 }
 
 func TestParsePeriod(t *testing.T) {

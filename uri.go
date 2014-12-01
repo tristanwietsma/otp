@@ -6,27 +6,11 @@ import (
 	"crypto/sha1"
 	"crypto/sha256"
 	"crypto/sha512"
-	"regexp"
+	"errors"
+	"net/url"
 	"strconv"
 	"strings"
 	"text/template"
-)
-
-var (
-	keyURIregex = regexp.MustCompile(
-		`^otpauth:\/\/(totp|hotp)\/([^\/?]*)\?.*secret=([A-Z2-7]*)(?:&.*|$)`)
-	issuerRegex = regexp.MustCompile(
-		`issuer=([^\/&]*)`)
-	algoRegex = regexp.MustCompile(
-		`(?:&|\?)algo=(SHA1|SHA256|SHA512|MD5|sha1|sha256|sha512|md5)(?:&|$)`)
-	digitsRegex = regexp.MustCompile(
-		`(?:&|\?)digits=([0-9]*)(?:&|$)`)
-	validDigitsRegex = regexp.MustCompile(
-		`(?:&|\?)digits=(6|8)(?:&|$)`)
-	periodRegex = regexp.MustCompile(
-		`totp.*(?:&|\?)period=([0-9]*)(?:&|$)`)
-	counterRegex = regexp.MustCompile(
-		`hotp.*(?:&|\?)counter=([0-9]*)(?:&|$)`)
 )
 
 // Returns the string representation of the Key according to the Google Authenticator KeyUriFormat. See https://code.google.com/p/google-authenticator/wiki/KeyUriFormat for more detail.
@@ -59,68 +43,68 @@ func (k Key) ToURI() string {
 // Parse OTPAUTH URI into Key attributes.
 func (k *Key) FromURI(uri string) error {
 
-	// requirements
-	if !keyURIregex.MatchString(uri) {
-		return KeyError{"FromURI", "Invalid format: missing."}
+	u, err := url.Parse(uri)
+	if err != nil {
+		return err
 	}
 
-	if strings.Count(uri, "/") != 3 {
-		return KeyError{"FromURI", "Invalid format: wrong # of '/'"}
+	if u.Scheme != "otpauth" {
+		return errors.New("invalid scheme")
 	}
 
-	groups := keyURIregex.FindStringSubmatch(uri)
-	(*k).Method = groups[1]
-	(*k).Label = groups[2]
-	(*k).Secret = groups[3]
+	(*k).Method = u.Host
+	(*k).Label = u.Path[1 : len(u.Path)-1]
 
-	// issuer
-	groups = issuerRegex.FindStringSubmatch(uri)
-	if len(groups) == 2 {
-		(*k).Issuer = groups[1]
-	}
+	params := u.Query()
+	(*k).Secret = params.Get("secret")
+	(*k).Issuer = params.Get("issuer")
 
-	// try to get algo; else default to SHA1
-	groups = algoRegex.FindStringSubmatch(uri)
-	if len(groups) == 2 {
-		switch strings.ToUpper(groups[1]) {
-		case "SHA1":
-			(*k).Algo = sha1.New
-		case "SHA256":
-			(*k).Algo = sha256.New
-		case "SHA512":
-			(*k).Algo = sha512.New
-		case "MD5":
-			(*k).Algo = md5.New
-		}
-	} else {
+	// parse out hashing algo; default to sha1
+	switch strings.ToUpper(params.Get("algo")) {
+	case "SHA256":
+		(*k).Algo = sha256.New
+	case "SHA512":
+		(*k).Algo = sha512.New
+	case "MD5":
+		(*k).Algo = md5.New
+	default:
 		(*k).Algo = sha1.New
+
 	}
 
-	// try to digits; else 6
-	groups = digitsRegex.FindStringSubmatch(uri)
-	if len(groups) == 2 {
-		groups = validDigitsRegex.FindStringSubmatch(uri)
-		if len(groups) == 2 {
-			(*k).Digits, _ = strconv.Atoi(groups[1])
-		} else {
-			return KeyError{"FromURI", "6 or 8 digits are valid"}
+	digits := params.Get("digits")
+	if digits != "" {
+		d, err := strconv.Atoi(digits)
+		if err != nil {
+			return errors.New("digits is non-integer")
 		}
+		(*k).Digits = d
 	} else {
 		(*k).Digits = 6
 	}
 
-	// if totp, try to get a period; else default to 30
-	groups = periodRegex.FindStringSubmatch(uri)
-	if len(groups) == 2 {
-		(*k).Period, _ = strconv.Atoi(groups[1])
-	} else {
-		(*k).Period = 30
-	}
-
-	// if hotp, try to get a counter
-	groups = counterRegex.FindStringSubmatch(uri)
-	if len(groups) == 2 {
-		(*k).Counter, _ = strconv.Atoi(groups[1])
+	// totp: try to get a period; else default to 30
+	// hotp: try to get a counter
+	if u.Host == "totp" {
+		period := params.Get("period")
+		if period != "" {
+			p, err := strconv.Atoi(period)
+			if err != nil {
+				errors.New("period is non-integer")
+			}
+			(*k).Period = p
+		} else {
+			(*k).Period = 30
+		}
+	} else if u.Host == "hotp" {
+		counter := params.Get("counter")
+		if counter != "" {
+			c, err := strconv.Atoi(counter)
+			if err != nil {
+				return errors.New("counter is non-integer")
+			}
+			(*k).Counter = c
+		}
 	}
 
 	return nil
