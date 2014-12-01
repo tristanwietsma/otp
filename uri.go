@@ -1,7 +1,6 @@
 package otp
 
 import (
-	"bytes"
 	"crypto/md5"
 	"crypto/sha1"
 	"crypto/sha256"
@@ -10,33 +9,37 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
-	"text/template"
 )
 
 // Returns the string representation of the Key according to the Google Authenticator KeyUriFormat. See https://code.google.com/p/google-authenticator/wiki/KeyUriFormat for more detail.
 func (k Key) ToURI() string {
-	markup := "otpauth://{{.Method}}/{{.Label}}?secret={{.Secret}}"
-	if len(k.Issuer) > 0 {
-		markup = markup + "&issuer={{.Issuer}}"
+	uri := url.URL{
+		Scheme: "otpauth",
+		Host:   k.Method,
+		Path:   "/" + k.Label,
 	}
 
-	// reflect out the name of the hash function
-	hashName := strings.Split(strings.Split(getFuncName(k.Algo), ".")[0], "/")[1]
-	markup = markup + "&algo=" + strings.ToUpper(hashName)
+	params := url.Values{}
+	params.Set("secret", k.Secret)
 
-	markup = markup + "&digits={{.Digits}}"
+	if k.Issuer != "" {
+		params.Set("issuer", k.Issuer)
+	}
+
+	hashName := strings.Split(strings.Split(getFuncName(k.Algo), ".")[0], "/")[1]
+	params.Set("algo", hashName)
+
+	params.Set("digits", strconv.Itoa(k.Digits))
 
 	if k.Method == "totp" {
-		markup = markup + "&period={{.Period}}"
+		params.Set("period", strconv.Itoa(k.Period))
 	}
 
 	if k.Method == "hotp" {
-		markup = markup + "&counter={{.Counter}}"
+		params.Set("counter", strconv.Itoa(k.Counter))
 	}
 
-	tmpl, _ := template.New("uri").Parse(markup)
-	var uri bytes.Buffer
-	tmpl.Execute(&uri, k)
+	uri.RawQuery = params.Encode()
 	return uri.String()
 }
 

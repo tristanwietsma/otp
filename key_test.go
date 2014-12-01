@@ -142,7 +142,7 @@ func TestTOTPString(t *testing.T) {
 	)
 
 	uri := key.ToURI()
-	if uri != "otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=issuer&algo=SHA1&digits=6&period=30" {
+	if uri != "otpauth://totp/label?algo=sha1&digits=6&issuer=issuer&period=30&secret=MFRGGZDFMZTWQ2LK" {
 		t.Error(uri)
 	}
 }
@@ -158,7 +158,7 @@ func TestHOTPString(t *testing.T) {
 	)
 
 	uri := key.ToURI()
-	if uri != "otpauth://hotp/label?secret=MFRGGZDFMZTWQ2LK&issuer=issuer&algo=SHA1&digits=6&counter=42" {
+	if uri != "otpauth://hotp/label?algo=sha1&counter=42&digits=6&issuer=issuer&secret=MFRGGZDFMZTWQ2LK" {
 		t.Error(uri)
 	}
 }
