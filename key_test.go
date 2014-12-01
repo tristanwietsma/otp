@@ -209,12 +209,21 @@ func TestFromUri(t *testing.T) {
 	}
 }
 
-func TestParseBadUri(t *testing.T) {
+func TestParseBadScheme(t *testing.T) {
 	k := Key{}
 	uri := "abcotpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer"
 	if err := k.FromURI(uri); err == nil {
-		t.Errorf("Parse URI should have failed")
+		t.Errorf("Parse URI should have failed: %v", k)
 	}
+}
+
+func TestParseBadUri(t *testing.T) {
+	k := Key{}
+	uri := "otpauth:totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer"
+	if err := k.FromURI(uri); err == nil {
+		t.Errorf("Parse URI should have failed: %v", k)
+	}
+
 }
 
 func TestParseAlgo(t *testing.T) {

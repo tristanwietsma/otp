@@ -53,6 +53,10 @@ func (k *Key) FromURI(uri string) error {
 	}
 
 	(*k).Method = u.Host
+
+	if u.Path == "" {
+		return errors.New("missing label")
+	}
 	(*k).Label = u.Path[1 : len(u.Path)-1]
 
 	params := u.Query()
