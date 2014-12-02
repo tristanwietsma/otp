@@ -77,16 +77,16 @@ func TestFromUri(t *testing.T) {
 	}
 }
 
-var BadURIs = []string{
-	"abcotpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer",
-	"otpauth:totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer",
-	"otpauth//totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer",
-	"otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer&algo=SHA1&digits=X",
-	"otpauth://hotp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer&algo=SHA1&counter=X",
-	"otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&period=X",
-}
-
 func TestBadURIs(t *testing.T) {
+	var BadURIs = []string{
+		"abcotpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer",
+		"otpauth:totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer",
+		"otpauth//totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer",
+		"otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer&algo=SHA1&digits=X",
+		"otpauth://hotp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer&algo=SHA1&counter=X",
+		"otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&period=X",
+	}
+
 	k := Key{}
 	for _, u := range BadURIs {
 		if err := k.FromURI(u); err == nil {
@@ -96,56 +96,26 @@ func TestBadURIs(t *testing.T) {
 }
 
 func TestParseAlgo(t *testing.T) {
+	pairs := []string{
+		"otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer&algo=SHA1", getFuncName(sha1.New),
+		"otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer&algo=sha1", getFuncName(sha1.New),
+		"otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer&algo=SHA256&nonsense=1", getFuncName(sha256.New),
+		"otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer&algo=sha256", getFuncName(sha256.New),
+		"otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer&algo=SHA512", getFuncName(sha512.New),
+		"otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer&algo=sha512", getFuncName(sha512.New),
+		"otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer&algo=MD5", getFuncName(md5.New),
+		"otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer&algo=md5", getFuncName(md5.New),
+	}
+
 	k := Key{}
-
-	// SHA1
-	uri := "otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer&algo=SHA1"
-	if err := k.FromURI(uri); getFuncName(k.Algo) != getFuncName(sha1.New) && err != nil {
-		t.Errorf("Parse URI should have parse SHA1\n%v", err)
+	for i, _ := range pairs {
+		if i%2 == 1 {
+			continue
+		}
+		if err := k.FromURI(pairs[i]); getFuncName(k.Algo) != pairs[i+1] || err != nil {
+			t.Errorf("Parse failed: %v", pairs[i])
+		}
 	}
-
-	// SHA256
-	uri = "otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer&algo=SHA256&nonsense=1"
-	if err := k.FromURI(uri); getFuncName(k.Algo) != getFuncName(sha256.New) && err != nil {
-		t.Errorf("Parse URI should have parse SHA256\n%v", err)
-	}
-
-	// SHA512
-	uri = "otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer&algo=SHA512"
-	if err := k.FromURI(uri); getFuncName(k.Algo) != getFuncName(sha512.New) && err != nil {
-		t.Errorf("Parse URI should have parse SHA512\n%v", err)
-	}
-
-	// MD5
-	uri = "otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer&algo=MD5"
-	if err := k.FromURI(uri); getFuncName(k.Algo) != getFuncName(md5.New) && err != nil {
-		t.Errorf("Parse URI should have parse MD5\n%v", err)
-	}
-
-	// sha1
-	uri = "otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer&algo=sha1"
-	if err := k.FromURI(uri); getFuncName(k.Algo) != getFuncName(sha1.New) && err != nil {
-		t.Errorf("Parse URI should have parse SHA1\n%v", err)
-	}
-
-	// sha256
-	uri = "otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer&algo=sha256&nonsense=1"
-	if err := k.FromURI(uri); getFuncName(k.Algo) != getFuncName(sha256.New) && err != nil {
-		t.Errorf("Parse URI should have parse SHA256\n%v", err)
-	}
-
-	// sha512
-	uri = "otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer&algo=sha512"
-	if err := k.FromURI(uri); getFuncName(k.Algo) != getFuncName(sha512.New) && err != nil {
-		t.Errorf("Parse URI should have parse SHA512\n%v", err)
-	}
-
-	// md5
-	uri = "otpauth://totp/label?secret=MFRGGZDFMZTWQ2LK&issuer=theIssuer&algo=md5"
-	if err := k.FromURI(uri); getFuncName(k.Algo) != getFuncName(md5.New) && err != nil {
-		t.Errorf("Parse URI should have parse MD5\n%v", err)
-	}
-
 }
 
 func TestParseDigits(t *testing.T) {
