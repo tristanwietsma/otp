@@ -15,7 +15,7 @@ func newKey(method, label, secret, issuer string, algo Hash, digits, period, cou
 		Counter: counter,
 	}
 
-	if v, err := k.IsValid(); v != true {
+	if err := k.Validate(); err != nil {
 		return &k, err
 	}
 
@@ -41,7 +41,7 @@ func NewKey(uri string) (*Key, error) {
 		return &k, err
 	}
 
-	if _, err := k.IsValid(); err != nil {
+	if err := k.Validate(); err != nil {
 		return &k, err
 	}
 

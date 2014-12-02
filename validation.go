@@ -2,7 +2,6 @@ package otp
 
 import (
 	"encoding/base32"
-	"strings"
 )
 
 func (k Key) hasValidMethod() error {
@@ -16,11 +15,6 @@ func (k Key) hasValidLabel() error {
 	if len(k.Label) == 0 {
 		return KeyError{"Label", "Missing value"}
 	}
-
-	if strings.ContainsRune(k.Label, '/') {
-		return KeyError{"Label", "Contains '/'"}
-	}
-
 	return nil
 }
 
@@ -33,13 +27,6 @@ func (k Key) hasValidSecret() error {
 		return KeyError{"Secret", "Invalid Base32"}
 	}
 
-	return nil
-}
-
-func (k Key) hasValidIssuer() error {
-	if strings.ContainsRune(k.Issuer, '/') {
-		return KeyError{"Issuer", "Contains '/'"}
-	}
 	return nil
 }
 
@@ -64,42 +51,37 @@ func (k Key) hasValidPeriod() error {
 	return nil
 }
 
-func (k Key) IsValid() (bool, error) {
+func (k Key) Validate() error {
 
 	// check method
 	if err := k.hasValidMethod(); err != nil {
-		return false, err
+		return err
 	}
 
 	//check label
 	if err := k.hasValidLabel(); err != nil {
-		return false, err
+		return err
 	}
 
 	// check secret
 	if err := k.hasValidSecret(); err != nil {
-		return false, err
-	}
-
-	// check issuer
-	if err := k.hasValidIssuer(); err != nil {
-		return false, err
+		return err
 	}
 
 	// check algo
 	if err := k.hasValidAlgo(); err != nil {
-		return false, err
+		return err
 	}
 
 	// check digits
 	if err := k.hasValidDigits(); err != nil {
-		return false, err
+		return err
 	}
 
 	// check period
 	if err := k.hasValidPeriod(); err != nil {
-		return false, err
+		return err
 	}
 
-	return true, nil
+	return nil
 }

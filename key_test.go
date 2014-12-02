@@ -23,8 +23,8 @@ func TestInvalidMethod(t *testing.T) {
 	key := Key{
 		Method: "crypto!",
 	}
-	v, _ := key.IsValid()
-	if v == true {
+	err := key.Validate()
+	if err == nil {
 		t.Fail()
 	}
 }
@@ -33,19 +33,8 @@ func TestMissingLabel(t *testing.T) {
 	key := Key{
 		Method: "totp",
 	}
-	v, _ := key.IsValid()
-	if v == true {
-		t.Fail()
-	}
-}
-
-func TestInvalidLabel(t *testing.T) {
-	key := Key{
-		Method: "totp",
-		Label:  "t/w",
-	}
-	v, _ := key.IsValid()
-	if v == true {
+	err := key.Validate()
+	if err == nil {
 		t.Fail()
 	}
 }
@@ -55,8 +44,8 @@ func TestMissingSecret(t *testing.T) {
 		Method: "totp",
 		Label:  "t@w",
 	}
-	v, _ := key.IsValid()
-	if v == true {
+	err := key.Validate()
+	if err == nil {
 		t.Fail()
 	}
 }
@@ -67,21 +56,8 @@ func TestBadSecret(t *testing.T) {
 		Label:  "t@w",
 		Secret: "abc123",
 	}
-	v, _ := key.IsValid()
-	if v == true {
-		t.Fail()
-	}
-}
-
-func TestBadIssuer(t *testing.T) {
-	key := Key{
-		Method: "totp",
-		Label:  "t@w",
-		Secret: "MFRGGZDFMZTWQ2LK",
-		Issuer: "issu/er",
-	}
-	v, _ := key.IsValid()
-	if v == true {
+	err := key.Validate()
+	if err == nil {
 		t.Fail()
 	}
 }
@@ -94,8 +70,8 @@ func TestBadAlgo(t *testing.T) {
 		Issuer: "issuer",
 		Algo:   md4.New,
 	}
-	v, _ := key.IsValid()
-	if v == true {
+	err := key.Validate()
+	if err == nil {
 		t.Fail()
 	}
 }
@@ -109,8 +85,8 @@ func TestBadDigits(t *testing.T) {
 		Algo:   sha1.New,
 		Digits: 99,
 	}
-	v, _ := key.IsValid()
-	if v == true {
+	err := key.Validate()
+	if err == nil {
 		t.Fail()
 	}
 }
@@ -125,8 +101,7 @@ func TestBadPeriod(t *testing.T) {
 		Digits: 6,
 		Period: -42,
 	}
-	v, _ := key.IsValid()
-	if v == true {
+	if err := key.Validate(); err == nil {
 		t.Fail()
 	}
 }
