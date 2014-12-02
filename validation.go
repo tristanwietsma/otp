@@ -64,42 +64,42 @@ func (k Key) hasValidPeriod() error {
 	return nil
 }
 
-func (k Key) IsValid() (bool, error) {
+func (k Key) Validate() error {
 
 	// check method
 	if err := k.hasValidMethod(); err != nil {
-		return false, err
+		return err
 	}
 
 	//check label
 	if err := k.hasValidLabel(); err != nil {
-		return false, err
+		return err
 	}
 
 	// check secret
 	if err := k.hasValidSecret(); err != nil {
-		return false, err
+		return err
 	}
 
 	// check issuer
 	if err := k.hasValidIssuer(); err != nil {
-		return false, err
+		return err
 	}
 
 	// check algo
 	if err := k.hasValidAlgo(); err != nil {
-		return false, err
+		return err
 	}
 
 	// check digits
 	if err := k.hasValidDigits(); err != nil {
-		return false, err
+		return err
 	}
 
 	// check period
 	if err := k.hasValidPeriod(); err != nil {
-		return false, err
+		return err
 	}
 
-	return true, nil
+	return nil
 }
