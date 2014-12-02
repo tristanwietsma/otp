@@ -19,80 +19,38 @@ func TestKeyError(t *testing.T) {
 	}
 }
 
-func TestInvalidMethod(t *testing.T) {
-	key := Key{
+var BadKeys = []Key{
+	Key{
 		Method: "crypto!",
-	}
-	err := key.Validate()
-	if err == nil {
-		t.Fail()
-	}
-}
-
-func TestMissingLabel(t *testing.T) {
-	key := Key{
+	},
+	Key{
 		Method: "totp",
-	}
-	err := key.Validate()
-	if err == nil {
-		t.Fail()
-	}
-}
-
-func TestMissingSecret(t *testing.T) {
-	key := Key{
+	},
+	Key{
 		Method: "totp",
 		Label:  "t@w",
-	}
-	err := key.Validate()
-	if err == nil {
-		t.Fail()
-	}
-}
-
-func TestBadSecret(t *testing.T) {
-	key := Key{
+	},
+	Key{
 		Method: "totp",
 		Label:  "t@w",
 		Secret: "abc123",
-	}
-	err := key.Validate()
-	if err == nil {
-		t.Fail()
-	}
-}
-
-func TestBadAlgo(t *testing.T) {
-	key := Key{
+	},
+	Key{
 		Method: "totp",
 		Label:  "t@w",
 		Secret: "MFRGGZDFMZTWQ2LK",
 		Issuer: "issuer",
 		Algo:   md4.New,
-	}
-	err := key.Validate()
-	if err == nil {
-		t.Fail()
-	}
-}
-
-func TestBadDigits(t *testing.T) {
-	key := Key{
+	},
+	Key{
 		Method: "totp",
 		Label:  "t@w",
 		Secret: "MFRGGZDFMZTWQ2LK",
 		Issuer: "issuer",
 		Algo:   sha1.New,
 		Digits: 99,
-	}
-	err := key.Validate()
-	if err == nil {
-		t.Fail()
-	}
-}
-
-func TestBadPeriod(t *testing.T) {
-	key := Key{
+	},
+	Key{
 		Method: "totp",
 		Label:  "t@w",
 		Secret: "MFRGGZDFMZTWQ2LK",
@@ -100,9 +58,14 @@ func TestBadPeriod(t *testing.T) {
 		Algo:   sha1.New,
 		Digits: 6,
 		Period: -42,
-	}
-	if err := key.Validate(); err == nil {
-		t.Fail()
+	},
+}
+
+func TestBadKeys(t *testing.T) {
+	for _, k := range BadKeys {
+		if err := k.Validate; err == nil {
+			t.Errorf("Bad Key didn't produce error on Validate(): %v", k)
+		}
 	}
 }
 
