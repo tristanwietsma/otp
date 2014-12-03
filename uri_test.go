@@ -38,6 +38,18 @@ var Pairs = []CheckPair{
 		},
 		U: "otpauth://hotp/label?algo=sha1&counter=42&digits=6&issuer=issuer&secret=MFRGGZDFMZTWQ2LK",
 	},
+	CheckPair{
+		K: Key{
+			Method: "totp",
+			Label:  "Example:alice@google.com",
+			Secret: "NAR5XTDD3EQU22YU",
+			Issuer: "Example",
+			Algo:   sha1.New,
+			Digits: 6,
+			Period: 30,
+		},
+		U: "otpauth://totp/Example:alice@google.com?algo=sha1&digits=6&issuer=Example&period=30&secret=NAR5XTDD3EQU22YU",
+	},
 }
 
 func TestCheckPairs(t *testing.T) {
@@ -50,11 +62,41 @@ func TestCheckPairs(t *testing.T) {
 			theKey, err = NewHOTPKey(p.K.Label, p.K.Secret, p.K.Issuer, p.K.Algo, p.K.Digits, p.K.Counter)
 		}
 		if err != nil {
-			t.Errorf("Failed to build key from %v", p.K)
+			t.Errorf("Failed to build key from %v\n%v", p.K, err)
 		}
 		uri := theKey.ToURI()
 		if uri != p.U {
-			t.Errorf("Does not match template: %v", p.U)
+			t.Errorf("Does not match template:\n%v\n%v", uri, p.U)
+		}
+
+		err := (*theKey).FromURI(p.U)
+		if err != nil {
+			t.Errorf("Unable to parse uri into Key: %v", err)
+		}
+
+		if (*theKey).Method != p.K.Method {
+			t.Error("Methods don't match")
+		}
+		if (*theKey).Label != p.K.Label {
+			t.Error("Labels don't match")
+		}
+		if (*theKey).Secret != p.K.Secret {
+			t.Error("Secrets don't match")
+		}
+		if (*theKey).Issuer != p.K.Issuer {
+			t.Error("Issuers don't match")
+		}
+		if getFuncName((*theKey).Algo) != getFuncName(p.K.Algo) {
+			t.Error("Algos don't match")
+		}
+		if (*theKey).Digits != p.K.Digits {
+			t.Error("Digits don't match")
+		}
+		if (*theKey).Counter != p.K.Counter {
+			t.Error("Counters don't match")
+		}
+		if (*theKey).Period != p.K.Period {
+			t.Error("Periods don't match")
 		}
 	}
 }
