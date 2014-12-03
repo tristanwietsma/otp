@@ -13,7 +13,7 @@ var METHODS = []string{"totp", "hotp"}
 // Supported values algorithms for `Key.Algo`.
 var HASHES = []Hash{sha1.New, sha256.New, sha512.New, md5.New}
 
-// Defines set of parameters required for code generation, including metadata.
+// Key defines a set of parameters required for code generation as well as metadata.
 type Key struct {
 	Method  string // Initialization method. Acceptable values are either 'totp' or 'hotp' for time-based or counter-based, respectively.
 	Label   string // Label for the key.
@@ -25,7 +25,7 @@ type Key struct {
 	Counter int    // The initial counter value. Applies only to 'hotp'.
 }
 
-// Given an initialization value, returns the proscribed HMAC one-time password.
+// GetCode accepts an initialization value and returns a corresponding code.
 func (k Key) GetCode(iv int64) (string, error) {
 	code, err := GetCode(k.Secret, iv, k.Algo, k.Digits)
 	return code, err

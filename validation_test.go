@@ -50,7 +50,7 @@ var BadKeys = []Key{
 
 func TestBadKeys(t *testing.T) {
 	for _, k := range BadKeys {
-		if err := k.Validate; err == nil {
+		if err := k.Validate(); err == nil {
 			t.Errorf("Bad Key didn't produce error on Validate(): %v", k)
 		}
 	}

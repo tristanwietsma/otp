@@ -22,19 +22,19 @@ func newKey(method, label, secret, issuer string, algo Hash, digits, period, cou
 	return &k, nil
 }
 
-// Returns a TOTP Key.
+// NewTOTPKey returns a time-based one-time password Key struct.
 func NewTOTPKey(label, secret, issuer string, algo Hash, digits, period int) (*Key, error) {
 	k, err := newKey("totp", label, secret, issuer, algo, digits, period, 0)
 	return k, err
 }
 
-// Returns a HOTP Key.
+// NewHOTPKey returns an HMAC one-time password Key struct..
 func NewHOTPKey(label, secret, issuer string, algo Hash, digits, counter int) (*Key, error) {
 	k, err := newKey("hotp", label, secret, issuer, algo, digits, 0, counter)
 	return k, err
 }
 
-// Returns a new Key given a OTPAUTH URI.
+// NewKey returns a new Key from an otpauth URI.
 func NewKey(uri string) (*Key, error) {
 	k := Key{}
 	if err := k.FromURI(uri); err != nil {
