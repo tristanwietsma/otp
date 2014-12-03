@@ -2,29 +2,30 @@ package otp
 
 import (
 	"encoding/base32"
+	"errors"
 )
 
 func (k Key) hasValidMethod() error {
 	if !stringInSlice(k.Method, methods) {
-		return KeyError{"Method", "Invalid value"}
+		return errors.New("Invalid method value")
 	}
 	return nil
 }
 
 func (k Key) hasValidLabel() error {
 	if len(k.Label) == 0 {
-		return KeyError{"Label", "Missing value"}
+		return errors.New("Missing value for label")
 	}
 	return nil
 }
 
 func (k Key) hasValidSecret() error {
 	if len(k.Secret) == 0 {
-		return KeyError{"Secret", "Missing value"}
+		return errors.New("Missing value for secret")
 	}
 
 	if _, err := base32.StdEncoding.DecodeString(k.Secret); err != nil {
-		return KeyError{"Secret", "Invalid Base32"}
+		return errors.New("Invalid Base32 value for secret")
 	}
 
 	return nil
@@ -32,21 +33,21 @@ func (k Key) hasValidSecret() error {
 
 func (k Key) hasValidAlgo() error {
 	if !hashInSlice(k.Algo, Hashes) {
-		return KeyError{"Algo", "Invalid hashing algorithm"}
+		return errors.New("Invalid hashing algorithm")
 	}
 	return nil
 }
 
 func (k Key) hasValidDigits() error {
 	if !(k.Digits == 6 || k.Digits == 8) {
-		return KeyError{"Digits", "Not equal to 6 or 8"}
+		return errors.New("Digit is not equal to 6 or 8")
 	}
 	return nil
 }
 
 func (k Key) hasValidPeriod() error {
 	if k.Method == "totp" && k.Period < 1 {
-		return KeyError{"Period", "Negative value"}
+		return errors.New("Period can not have a non-positive value")
 	}
 	return nil
 }

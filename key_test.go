@@ -5,16 +5,6 @@ import (
 	"testing"
 )
 
-func TestKeyError(t *testing.T) {
-	err := KeyError{
-		param: "param",
-		msg:   "msg",
-	}
-	if err.Error() != "KeyError - param - msg" {
-		t.Fail()
-	}
-}
-
 func TestKeyGetCode(t *testing.T) {
 	hkey, _ := NewHOTPKey(
 		"label",

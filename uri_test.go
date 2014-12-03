@@ -108,7 +108,7 @@ func TestParseAlgo(t *testing.T) {
 	}
 
 	k := Key{}
-	for i, _ := range pairs {
+	for i := range pairs {
 		if i%2 == 1 {
 			continue
 		}

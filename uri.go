@@ -11,7 +11,8 @@ import (
 	"strings"
 )
 
-// Returns the string representation of the Key according to the Google Authenticator KeyUriFormat. See https://code.google.com/p/google-authenticator/wiki/KeyUriFormat for more detail.
+// ToURI returns the string representation of the Key.
+// See https://code.google.com/p/google-authenticator/wiki/KeyUriFormat.
 func (k Key) ToURI() string {
 	uri := url.URL{
 		Scheme: "otpauth",
@@ -43,7 +44,7 @@ func (k Key) ToURI() string {
 	return uri.String()
 }
 
-// Parse OTPAUTH URI into Key attributes.
+// FromURI parses an otpauth URI into the Key.
 func (k *Key) FromURI(uri string) error {
 
 	u, err := url.ParseRequestURI(uri)
