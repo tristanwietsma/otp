@@ -64,7 +64,7 @@ func (k *Key) FromURI(uri string) error {
 	(*k).Label = u.Path[1:len(u.Path)]
 
 	params := u.Query()
-	(*k).Secret = params.Get("secret")
+	(*k).Secret = strings.ToUpper(params.Get("secret"))
 	(*k).Issuer = params.Get("issuer")
 
 	// parse out hashing algo; default to sha1
