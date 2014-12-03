@@ -8,10 +8,10 @@ import (
 )
 
 // Supported values for `Key.Method`.
-var METHODS = []string{"totp", "hotp"}
+var methods = []string{"totp", "hotp"}
 
 // Supported values algorithms for `Key.Algo`.
-var HASHES = []Hash{sha1.New, sha256.New, sha512.New, md5.New}
+var Hashes = []Hash{sha1.New, sha256.New, sha512.New, md5.New}
 
 // Key defines a set of parameters required for code generation as well as metadata.
 type Key struct {

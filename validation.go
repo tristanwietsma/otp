@@ -5,7 +5,7 @@ import (
 )
 
 func (k Key) hasValidMethod() error {
-	if !stringInSlice(k.Method, METHODS) {
+	if !stringInSlice(k.Method, methods) {
 		return KeyError{"Method", "Invalid value"}
 	}
 	return nil
@@ -31,7 +31,7 @@ func (k Key) hasValidSecret() error {
 }
 
 func (k Key) hasValidAlgo() error {
-	if !hashInSlice(k.Algo, HASHES) {
+	if !hashInSlice(k.Algo, Hashes) {
 		return KeyError{"Algo", "Invalid hashing algorithm"}
 	}
 	return nil
@@ -51,6 +51,7 @@ func (k Key) hasValidPeriod() error {
 	return nil
 }
 
+// Validate returns a descriptive error if the Key is invalid, else nil.
 func (k Key) Validate() error {
 
 	// check method
