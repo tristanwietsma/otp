@@ -52,11 +52,11 @@ func (k *Key) FromURI(uri string) error {
 		return err
 	}
 
-	if u.Scheme != "otpauth" {
+	if strings.ToLower(u.Scheme) != "otpauth" {
 		return errors.New("invalid scheme")
 	}
 
-	(*k).Method = u.Host
+	(*k).Method = strings.ToLower(u.Host)
 
 	if u.Path == "" {
 		return errors.New("missing label")
