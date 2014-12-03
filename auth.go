@@ -10,19 +10,19 @@ import (
 	"time"
 )
 
-// Type to represent <lib>.New function, where lib implements Go's hash library.
+// Hash is a type to represent functions that return a hash.Hash.
 type Hash func() hash.Hash
 
-// Returns the current time interval as unix epoch divided by "period".
+// GetInterval returns the current time interval as unix epoch divided by period.
 func GetInterval(period int64) int64 {
 	return time.Now().Unix() / period
 }
 
-// Returns a one-time password.
-// "secret" is a Base32 encoded HMAC key.
-// "iv" is the initialization value for the HMAC.
-// "hashFunc" is the hashing function to use in the HMAC. See otp.HASHES.
-// "digits" is the length of digits to display in the output code.
+// GetCode returns a one-time password.
+// The secret parameter is a Base32 encoded HMAC key.
+// The iv parameter is the initialization value for the HMAC.
+// The hashFunc is a hash function to use in the HMAC. See otp.HASHES for supported hashes.
+// The digits parameter is the length of returned code.
 //
 // Example:
 //      code, err := GetCode("MFRGGZDFMZTWQ2LK", 1, sha1.New, 6)
@@ -33,7 +33,7 @@ func GetCode(secret string, iv int64, hashFunc Hash, digits int) (string, error)
 	}
 
 	msg := bytes.Buffer{}
-	_ = binary.Write(&msg, binary.BigEndian, iv)
+	binary.Write(&msg, binary.BigEndian, iv)
 
 	mac := hmac.New(hashFunc, key)
 	mac.Write(msg.Bytes())
