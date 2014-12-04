@@ -1,4 +1,4 @@
 /*
-Package otp provides a one-time password (OTP) implementation. Supports HMAC-based (HOTP) and time-based (TOTP) methods.
+Package otp provides one-time password authentication using both HMAC (HOTP) and time-based (TOTP) approaches.
 */
 package otp
