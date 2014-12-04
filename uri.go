@@ -14,6 +14,7 @@ import (
 // ToURI returns the string representation of the Key.
 // See https://code.google.com/p/google-authenticator/wiki/KeyUriFormat.
 func (k Key) ToURI() string {
+
 	uri := url.URL{
 		Scheme: "otpauth",
 		Host:   k.Method,
@@ -22,29 +23,28 @@ func (k Key) ToURI() string {
 
 	params := url.Values{}
 	params.Set("secret", k.Secret32)
-
 	if k.Issuer != "" {
 		params.Set("issuer", k.Issuer)
 	}
 
-	hashName := strings.Split(strings.Split(getFuncName(k.Algo), ".")[0], "/")[1]
+	hashName := strings.Split(
+		strings.Split(getFuncName(k.Algo), ".")[0], "/")[1]
 	params.Set("algo", hashName)
 
 	params.Set("digits", strconv.Itoa(k.Digits))
 
 	if k.Method == "totp" {
 		params.Set("period", strconv.Itoa(k.Period))
-	}
-
-	if k.Method == "hotp" {
+	} else {
 		params.Set("counter", strconv.Itoa(k.Counter))
 	}
 
 	uri.RawQuery = params.Encode()
+
 	return uri.String()
 }
 
-// FromURI parses an otpauth URI into the Key.
+// FromURI parses an otpauth URI into the key.
 func (k *Key) FromURI(uri string) error {
 
 	u, err := url.ParseRequestURI(uri)
@@ -58,7 +58,7 @@ func (k *Key) FromURI(uri string) error {
 
 	(*k).Method = strings.ToLower(u.Host)
 
-	if u.Path == "" {
+	if len(u.Path) < 2 {
 		return errors.New("missing label")
 	}
 	(*k).Label = u.Path[1:len(u.Path)]
@@ -67,7 +67,6 @@ func (k *Key) FromURI(uri string) error {
 	(*k).Secret32 = strings.ToUpper(params.Get("secret"))
 	(*k).Issuer = params.Get("issuer")
 
-	// parse out hashing algo; default to sha1
 	switch strings.ToUpper(params.Get("algo")) {
 	case "SHA256":
 		(*k).Algo = sha256.New
@@ -77,7 +76,6 @@ func (k *Key) FromURI(uri string) error {
 		(*k).Algo = md5.New
 	default:
 		(*k).Algo = sha1.New
-
 	}
 
 	digits := params.Get("digits")
@@ -91,8 +89,6 @@ func (k *Key) FromURI(uri string) error {
 		(*k).Digits = 6
 	}
 
-	// totp: try to get a period; else default to 30
-	// hotp: try to get a counter
 	if u.Host == "totp" {
 		period := params.Get("period")
 		if period != "" {
