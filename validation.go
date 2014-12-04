@@ -52,7 +52,8 @@ func (k Key) hasValidPeriod() error {
 	return nil
 }
 
-// Validate returns a descriptive error if the Key is invalid, else nil.
+// Validate checks if the key parameters conform to the specification.
+// In invalid, an error is returns.
 func (k Key) Validate() error {
 
 	// check method
