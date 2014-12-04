@@ -20,8 +20,8 @@ func GetInterval(period int64) int64 {
 
 // GetCode returns a one-time password.
 // The secret32 parameter is a Base32-encoded HMAC key.
-// The iv parameter is the initialization value for the HMAC.
-// The h parameter is a hash function to use in the HMAC. See otp.HASHES for supported hashes (see Hashes).
+// The iv parameter is the initialization value.
+// The h parameter is a hash function to use in the HMAC.
 // The digits parameter is the length of returned code.
 //
 // Example:
