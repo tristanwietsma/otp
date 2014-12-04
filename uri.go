@@ -44,6 +44,7 @@ func (k Key) ToURI() string {
 }
 
 // FromURI parses an otpauth URI into the key.
+// Defaults are included for the hashing algorithm (sha1.New), digits (6), and period (30); these parameters may be excluded from the URI. The issuer is optional. For totp, only the method, label, and secret are required. See https://code.google.com/p/google-authenticator/wiki/KeyUriFormat for more information.
 //
 // Example:
 //      k.FromURI("otpauth://totp/Example:alice@google.com?algo=sha1&digits=6&issuer=Example&period=30&secret=NAR5XTDD3EQU22YU")
