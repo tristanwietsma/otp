@@ -13,8 +13,6 @@ func TestGetInterval(t *testing.T) {
 }
 
 func TestGetCode(t *testing.T) {
-	// test cases borrowed from the excellent Python project:
-	// https://github.com/tadeck/onetimepass
 	code, err := GetCode("MFRGGZDFMZTWQ2LK", 1, sha1.New, 6)
 	if err != nil || code != "765705" {
 		t.Errorf("Code did not match for first interval:\n%v\n%v", code, err)

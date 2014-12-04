@@ -16,37 +16,37 @@ type CheckPair struct {
 var Pairs = []CheckPair{
 	CheckPair{
 		K: Key{
-			Method: "totp",
-			Label:  "label",
-			Secret: "MFRGGZDFMZTWQ2LK",
-			Issuer: "issuer",
-			Algo:   sha1.New,
-			Digits: 6,
-			Period: 30,
+			Method:   "totp",
+			Label:    "label",
+			Secret32: "MFRGGZDFMZTWQ2LK",
+			Issuer:   "issuer",
+			Algo:     sha1.New,
+			Digits:   6,
+			Period:   30,
 		},
 		U: "otpauth://totp/label?algo=sha1&digits=6&issuer=issuer&period=30&secret=MFRGGZDFMZTWQ2LK",
 	},
 	CheckPair{
 		K: Key{
-			Method:  "hotp",
-			Label:   "label",
-			Secret:  "MFRGGZDFMZTWQ2LK",
-			Issuer:  "issuer",
-			Algo:    sha1.New,
-			Digits:  6,
-			Counter: 42,
+			Method:   "hotp",
+			Label:    "label",
+			Secret32: "MFRGGZDFMZTWQ2LK",
+			Issuer:   "issuer",
+			Algo:     sha1.New,
+			Digits:   6,
+			Counter:  42,
 		},
 		U: "otpauth://hotp/label?algo=sha1&counter=42&digits=6&issuer=issuer&secret=MFRGGZDFMZTWQ2LK",
 	},
 	CheckPair{
 		K: Key{
-			Method: "totp",
-			Label:  "Example:alice@google.com",
-			Secret: "NAR5XTDD3EQU22YU",
-			Issuer: "Example",
-			Algo:   sha1.New,
-			Digits: 6,
-			Period: 30,
+			Method:   "totp",
+			Label:    "Example:alice@google.com",
+			Secret32: "NAR5XTDD3EQU22YU",
+			Issuer:   "Example",
+			Algo:     sha1.New,
+			Digits:   6,
+			Period:   30,
 		},
 		U: "otpauth://totp/Example:alice@google.com?algo=sha1&digits=6&issuer=Example&period=30&secret=NAR5XTDD3EQU22YU",
 	},
@@ -57,9 +57,9 @@ func TestCheckPairs(t *testing.T) {
 	var err error
 	for _, p := range Pairs {
 		if p.K.Method == "totp" {
-			theKey, err = NewTOTPKey(p.K.Label, p.K.Secret, p.K.Issuer, p.K.Algo, p.K.Digits, p.K.Period)
+			theKey, err = NewTOTPKey(p.K.Label, p.K.Secret32, p.K.Issuer, p.K.Algo, p.K.Digits, p.K.Period)
 		} else {
-			theKey, err = NewHOTPKey(p.K.Label, p.K.Secret, p.K.Issuer, p.K.Algo, p.K.Digits, p.K.Counter)
+			theKey, err = NewHOTPKey(p.K.Label, p.K.Secret32, p.K.Issuer, p.K.Algo, p.K.Digits, p.K.Counter)
 		}
 		if err != nil {
 			t.Errorf("Failed to build key from %v\n%v", p.K, err)
@@ -80,8 +80,8 @@ func TestCheckPairs(t *testing.T) {
 		if (*theKey).Label != p.K.Label {
 			t.Error("Labels don't match")
 		}
-		if (*theKey).Secret != p.K.Secret {
-			t.Error("Secrets don't match")
+		if (*theKey).Secret32 != p.K.Secret32 {
+			t.Error("Secret32s don't match")
 		}
 		if (*theKey).Issuer != p.K.Issuer {
 			t.Error("Issuers don't match")
@@ -110,7 +110,7 @@ func TestFromUri(t *testing.T) {
 
 	if k.Method != "totp" &&
 		k.Label != "label" &&
-		k.Secret != "MFRGGZDFMZTWQ2LK" &&
+		k.Secret32 != "MFRGGZDFMZTWQ2LK" &&
 		k.Issuer != "theIssuer" &&
 		getFuncName(k.Algo) != getFuncName(sha1.New) &&
 		k.Digits == 6 &&

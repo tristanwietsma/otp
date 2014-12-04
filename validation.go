@@ -19,12 +19,12 @@ func (k Key) hasValidLabel() error {
 	return nil
 }
 
-func (k Key) hasValidSecret() error {
-	if len(k.Secret) == 0 {
+func (k Key) hasValidSecret32() error {
+	if len(k.Secret32) == 0 {
 		return errors.New("Missing value for secret")
 	}
 
-	if _, err := base32.StdEncoding.DecodeString(k.Secret); err != nil {
+	if _, err := base32.StdEncoding.DecodeString(k.Secret32); err != nil {
 		return errors.New("Invalid Base32 value for secret")
 	}
 
@@ -66,7 +66,7 @@ func (k Key) Validate() error {
 	}
 
 	// check secret
-	if err := k.hasValidSecret(); err != nil {
+	if err := k.hasValidSecret32(); err != nil {
 		return err
 	}
 
