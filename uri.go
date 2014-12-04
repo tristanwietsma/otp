@@ -45,6 +45,9 @@ func (k Key) ToURI() string {
 }
 
 // FromURI parses an otpauth URI into the key.
+//
+// Example:
+//      k.FromURI("otpauth://totp/Example:alice@google.com?algo=sha1&digits=6&issuer=Example&period=30&secret=NAR5XTDD3EQU22YU")
 func (k *Key) FromURI(uri string) error {
 
 	u, err := url.ParseRequestURI(uri)
