@@ -12,7 +12,6 @@ import (
 )
 
 // ToURI returns the string representation of the Key.
-// See https://code.google.com/p/google-authenticator/wiki/KeyUriFormat.
 func (k Key) ToURI() string {
 
 	uri := url.URL{
