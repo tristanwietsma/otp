@@ -35,12 +35,18 @@ func NewTOTPKey(
 }
 
 // NewHOTPKey returns a hotp key struct.
-func NewHOTPKey(label, secret32, issuer string, algo Hash, digits, counter int) (*Key, error) {
+func NewHOTPKey(
+	label,
+	secret32,
+	issuer string,
+	algo Hash,
+	digits,
+	counter int) (*Key, error) {
 	k, err := newKey("hotp", label, secret32, issuer, algo, digits, 0, counter)
 	return k, err
 }
 
-// NewKey returns a new Key from an otpauth URI.
+// NewKey returns a key from an otpauth URI.
 func NewKey(uri string) (*Key, error) {
 	k := Key{}
 	if err := k.FromURI(uri); err != nil {
