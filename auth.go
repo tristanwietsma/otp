@@ -19,15 +19,15 @@ func GetInterval(period int64) int64 {
 }
 
 // GetCode returns a one-time password.
-// The secret parameter is a Base32-encoded HMAC key.
+// The secret32 parameter is a Base32-encoded HMAC key.
 // The iv parameter is the initialization value for the HMAC.
-// The hashFunc is a hash function to use in the HMAC. See otp.HASHES for supported hashes (see Hashes).
+// The h parameter is a hash function to use in the HMAC. See otp.HASHES for supported hashes (see Hashes).
 // The digits parameter is the length of returned code.
 //
 // Example:
 //      code, err := GetCode("MFRGGZDFMZTWQ2LK", 1, sha1.New, 6)
-func GetCode(secret string, iv int64, hashFunc Hash, digits int) (string, error) {
-	key, err := base32.StdEncoding.DecodeString(secret)
+func GetCode(secret32 string, iv int64, h Hash, digits int) (string, error) {
+	key, err := base32.StdEncoding.DecodeString(secret32)
 	if err != nil {
 		return "", err
 	}
@@ -35,7 +35,7 @@ func GetCode(secret string, iv int64, hashFunc Hash, digits int) (string, error)
 	msg := bytes.Buffer{}
 	binary.Write(&msg, binary.BigEndian, iv)
 
-	mac := hmac.New(hashFunc, key)
+	mac := hmac.New(h, key)
 	mac.Write(msg.Bytes())
 	digest := mac.Sum(nil)
 
