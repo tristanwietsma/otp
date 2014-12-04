@@ -10,10 +10,10 @@ import (
 	"time"
 )
 
-// Hash is a type to represent functions that return a hash.Hash.
+// Hash represents a function that returns a hash.Hash.
 type Hash func() hash.Hash
 
-// GetInterval returns the current time interval as unix epoch divided by period.
+// GetInterval returns the unix epoch divided by period.
 func GetInterval(period int64) int64 {
 	return time.Now().Unix() / period
 }
@@ -47,6 +47,7 @@ func GetCode(secret32 string, iv int64, h Hash, digits int) (string, error) {
 	_ = binary.Read(truncBytes, binary.BigEndian, &code)
 
 	code = (code & 0x7FFFFFFF) % 1000000
+
 	stringCode := strconv.Itoa(int(code))
 	for len(stringCode) < digits {
 		stringCode = "0" + stringCode
