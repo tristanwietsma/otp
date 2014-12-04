@@ -23,7 +23,13 @@ func newKey(method, label, secret, issuer string, algo Hash, digits, period, cou
 }
 
 // NewTOTPKey returns a totp key struct.
-func NewTOTPKey(label, secret32, issuer string, algo Hash, digits, period int) (*Key, error) {
+func NewTOTPKey(
+	label,
+	secret32,
+	issuer string,
+	algo Hash,
+	digits,
+	period int) (*Key, error) {
 	k, err := newKey("totp", label, secret32, issuer, algo, digits, period, 0)
 	return k, err
 }
