@@ -9,7 +9,6 @@ before_install:
 
 script:
     - go test -covermode=count -coverprofile=coverage.out
-    :w
     
 notifications:
     email: false
