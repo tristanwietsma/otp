@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 )
 
 type initCommand struct{}
@@ -11,7 +12,19 @@ func (c initCommand) Name() string {
 }
 
 func (c initCommand) Run(args []string) {
-	fmt.Println("init runs")
+	path := getCfg()
+	if _, err := os.Open(path); err != nil {
+		f, _ := os.Create(path)
+		f.WriteString(
+			`# totp configuration
+#
+# Example:
+#
+# [key]
+# label = "descriptive label for key"
+# secret = Base32 encoded secret key
+`)
+	}
 }
 
 func (c initCommand) Usage() {
