@@ -2,7 +2,7 @@
 
 # otp: One-Time Passwords in Go
 
-[![Build Status](https://travis-ci.org/tristanwietsma/otp.svg)](https://travis-ci.org/tristanwietsma/otp) [![Coverage Status](https://img.shields.io/coveralls/tristanwietsma/otp.svg)](https://coveralls.io/r/tristanwietsma/otp.go) [![GoDoc](https://godoc.org/github.com/tristanwietsma/otp?status.svg)](https://godoc.org/github.com/tristanwietsma/otp)
+[![Build Status](https://travis-ci.org/tristanwietsma/otp.svg)](https://travis-ci.org/tristanwietsma/otp) [![Coverage Status](https://img.shields.io/coveralls/tristanwietsma/otp.svg)](https://coveralls.io/r/tristanwietsma/otp) [![GoDoc](https://godoc.org/github.com/tristanwietsma/otp?status.svg)](https://godoc.org/github.com/tristanwietsma/otp)
 
 There are other Go implementations of OTP out there, but this one is mine.
 
