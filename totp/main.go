@@ -11,6 +11,7 @@ type command interface {
 	Name() string
 	Run([]string)
 	Usage()
+	Help()
 }
 
 var commands = []command{
@@ -50,10 +51,26 @@ func main() {
 	}
 
 	args := flag.Args()
+
+	// search commands
 	for _, cmd := range commands {
 		if cmd.Name() == args[0] {
 			cmd.Run(args[1:])
 			return
+		}
+	}
+
+	// help
+	if args[0] == "help" {
+		if flag.NArg() != 2 {
+			fmt.Println("\nhelp usage:\n\n    totp help [command]\n")
+			return
+		}
+		for _, cmd := range commands {
+			if args[1] == cmd.Name() {
+				cmd.Help()
+				return
+			}
 		}
 	}
 

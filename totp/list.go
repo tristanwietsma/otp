@@ -18,3 +18,9 @@ func (c listCommand) Usage() {
 	usage := "    list        list keys"
 	fmt.Println(usage)
 }
+
+func (c listCommand) Help() {
+	help := "\n" + c.Name() + " usage:\n\n    totp " + c.Name() + "\n\n"
+	help += "    Lists all keys stored in " + getCfg() + ".\n"
+	fmt.Println(help)
+}

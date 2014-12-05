@@ -18,3 +18,9 @@ func (c calcCommand) Usage() {
 	usage := "    calc        calculate a one-time password"
 	fmt.Println(usage)
 }
+
+func (c calcCommand) Help() {
+	help := "\n" + c.Name() + " usage:\n\n    totp " + c.Name() + " label\n\n"
+	help += "    The label is associated with a key and defined in " + getCfg() + ".\n"
+	fmt.Println(help)
+}
