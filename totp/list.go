@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/BurntSushi/toml"
 )
 
 type listCommand struct{}
@@ -11,7 +12,12 @@ func (c listCommand) Name() string {
 }
 
 func (c listCommand) Run(args []string) {
-	fmt.Println("list runs")
+	var cfg config
+	path := getCfg()
+	if _, err := toml.DecodeFile(path, &cfg); err != nil {
+		fmt.Println(err)
+	}
+	fmt.Println(cfg)
 }
 
 func (c listCommand) Usage() {

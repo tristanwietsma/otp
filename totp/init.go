@@ -20,8 +20,7 @@ func (c initCommand) Run(args []string) {
 #
 # Example:
 #
-# [key]
-# label = "descriptive label for key"
+# [key.label]
 # secret = Base32 encoded secret key
 `)
 	}
