@@ -6,8 +6,8 @@ import (
 )
 
 func getCode(secret string) string {
-	iv := otp.GetInterval()
-	code, err := otp.GetCode(secret, iv, otp.HASHES[0], 6)
+	iv := otp.GetInterval(30)
+	code, err := otp.GetCode(secret, iv, otp.Hashes[0], 6)
 	if err != nil {
 		return "calculation failed"
 	}
