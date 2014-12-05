@@ -9,7 +9,7 @@ before_install:
 
 script:
     - go test -covermode=count -coverprofile=coverage.out
-    - goveralls -coverprofile=coverage.out -service travis-ci -repotoken $COVERALLS_TOKEN
-
+    :w
+    
 notifications:
     email: false
