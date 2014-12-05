@@ -2,7 +2,17 @@ package main
 
 import (
 	"fmt"
+	"github.com/tristanwietsma/otp"
 )
+
+func getCode(secret string) string {
+	iv := otp.GetInterval()
+	code, err := otp.GetCode(secret, iv, otp.HASHES[0], 6)
+	if err != nil {
+		return "calculation failed"
+	}
+	return code
+}
 
 type calcCommand struct{}
 
@@ -10,8 +20,17 @@ func (c calcCommand) Name() string {
 	return "calc"
 }
 
-func (c calcCommand) Run(args []string) {
-	fmt.Println("calc runs")
+func (c calcCommand) Run(args []string) bool {
+	if len(args) != 1 {
+		return false
+	}
+	cfg := getCfg()
+	k, ok := cfg.Key[args[0]]
+	if !ok {
+		return false
+	}
+	fmt.Println(getCode(k.Secret))
+	return true
 }
 
 func (c calcCommand) Usage() {

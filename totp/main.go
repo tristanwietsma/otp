@@ -7,7 +7,7 @@ import (
 
 type command interface {
 	Name() string
-	Run([]string)
+	Run([]string) bool
 	Usage()
 	Help()
 }
@@ -53,7 +53,10 @@ func main() {
 	// search commands
 	for _, cmd := range commands {
 		if cmd.Name() == args[0] {
-			cmd.Run(args[1:])
+			if cmd.Run(args[1:]) {
+				return
+			}
+			cmd.Help()
 			return
 		}
 	}

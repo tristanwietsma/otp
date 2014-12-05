@@ -10,11 +10,12 @@ func (c listCommand) Name() string {
 	return "list"
 }
 
-func (c listCommand) Run(args []string) {
+func (c listCommand) Run(args []string) bool {
 	cfg := getCfg()
 	for k := range cfg.Key {
 		fmt.Println(k)
 	}
+	return true
 }
 
 func (c listCommand) Usage() {

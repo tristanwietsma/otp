@@ -11,7 +11,7 @@ func (c initCommand) Name() string {
 	return "init"
 }
 
-func (c initCommand) Run(args []string) {
+func (c initCommand) Run(args []string) bool {
 	path := getCfgPath()
 	if _, err := os.Open(path); err != nil {
 		f, _ := os.Create(path)
@@ -24,6 +24,7 @@ func (c initCommand) Run(args []string) {
 # secret = Base32 encoded secret key
 `)
 	}
+	return true
 }
 
 func (c initCommand) Usage() {
