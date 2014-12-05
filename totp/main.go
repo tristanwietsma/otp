@@ -3,8 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"log"
-	"os/user"
 )
 
 type command interface {
@@ -75,12 +73,4 @@ func main() {
 	}
 
 	usage()
-}
-
-func getCfg() string {
-	usr, err := user.Current()
-	if err != nil {
-		log.Fatal(err)
-	}
-	return usr.HomeDir + "/.totp.toml"
 }

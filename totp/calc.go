@@ -21,6 +21,6 @@ func (c calcCommand) Usage() {
 
 func (c calcCommand) Help() {
 	help := "\n" + c.Name() + " usage:\n\n    totp " + c.Name() + " label\n\n"
-	help += "    The label is associated with a key and defined in " + getCfg() + ".\n"
+	help += "    The label is associated with a key and defined in " + getCfgPath() + ".\n"
 	fmt.Println(help)
 }
