@@ -1,6 +1,6 @@
 # 2fa
 
-Terminal replacement for Google Authenicator
+Terminal-based replacement for Google Authenicator
 
 ## Basics
 
