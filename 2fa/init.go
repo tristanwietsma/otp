@@ -16,7 +16,7 @@ func (c initCommand) Run(args []string) bool {
 	if _, err := os.Open(path); err != nil {
 		f, _ := os.Create(path)
 		f.WriteString(
-			`# totp configuration
+			`# 2fa configuration
 #
 # Example:
 #
@@ -34,7 +34,7 @@ func (c initCommand) Usage() {
 }
 
 func (c initCommand) Help() {
-	help := "\n" + c.Name() + " usage:\n\n    totp " + c.Name() + "\n\n"
+	help := "\n" + c.Name() + " usage:\n\n    2fa " + c.Name() + "\n\n"
 	help += "    Creates a configuration file at " + getCfgPath() + " if one does not already exist.\n"
 	fmt.Println(help)
 }

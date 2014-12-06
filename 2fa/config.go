@@ -11,7 +11,7 @@ func getCfgPath() string {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return usr.HomeDir + "/.totp.toml"
+	return usr.HomeDir + "/.2fa.toml"
 }
 
 func getCfg() *config {

@@ -20,11 +20,11 @@ var commands = []command{
 
 func usage() {
 	fmt.Println(
-		`totp is a time-based, one-time password generator.
+		`2fa is a time-based, one-time password generator.
 
 Usage:
 
-        totp command [arguments]
+        2fa command [arguments]
 
 The commands are:
 `)
@@ -34,7 +34,7 @@ The commands are:
 
 	fmt.Println(
 		`
-Use "totp help [command]" for more information about a command.
+Use "2fa help [command]" for more information about a command.
 `)
 }
 
@@ -64,7 +64,7 @@ func main() {
 	// help
 	if args[0] == "help" {
 		if flag.NArg() != 2 {
-			fmt.Println("\nhelp usage:\n\n    totp help [command]\n")
+			fmt.Println("\nhelp usage:\n\n    2fa help [command]\n")
 			return
 		}
 		for _, cmd := range commands {
