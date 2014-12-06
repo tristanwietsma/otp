@@ -1,6 +1,4 @@
-/*
-Terminal-based replacement for Google Authenicator
-*/
+// Command 2fa is a terminal-based replacement for Google Authenicator
 package main
 
 import (
