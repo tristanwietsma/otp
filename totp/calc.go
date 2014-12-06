@@ -9,7 +9,7 @@ func getCode(secret string) (string, int64) {
 	iv, rem := otp.GetInterval(30)
 	code, err := otp.GetCode(secret, iv, otp.Hashes[0], 6)
 	if err != nil {
-		return "calculation failed"
+		return "calculation failed", -1
 	}
 	return code, rem
 }
@@ -30,7 +30,12 @@ func (c calcCommand) Run(args []string) bool {
 		return false
 	}
 	code, rem := getCode(k.Secret)
-	fmt.Printf("%v (%v seconds)\n", code, rem)
+	if rem > 0 {
+		fmt.Printf("%v (%v seconds)\n", code, rem)
+		return true
+	}
+
+	fmt.Printf("%v; verify %v is correctly formatted", code, getCfgPath())
 	return true
 }
 
