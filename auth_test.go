@@ -6,9 +6,12 @@ import (
 )
 
 func TestGetInterval(t *testing.T) {
-	iv := GetInterval(30)
+	iv, r := GetInterval(30)
 	if iv < 0 {
 		t.Error("Time interval is negative.")
+	}
+	if r < 0 {
+		t.Error("Negative time remaining.")
 	}
 }
 

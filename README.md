@@ -10,4 +10,5 @@ There are other Go implementations of OTP out there, but this one is mine.
 
 - The math to calculate OTP codes is tested and in working order.
 - Much more work to be done before this is a useful package for production use.
-- Also, I want to build out the test cases.
+- Adding a CLI
+- Want to have a web example using some of the popular frameworks.
