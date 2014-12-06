@@ -22,7 +22,7 @@ $ 2fa init
 
 This will create a TOML configuration in your home directory.
 
-```toml
+```bash
 $ cat ~/.2fa.toml 
 # totp configuration
 #
