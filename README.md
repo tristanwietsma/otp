@@ -1,4 +1,4 @@
-# otp: One-Time Passwords in Go
+# One-Time Passwords in Go
 
 [![Build Status](https://travis-ci.org/tristanwietsma/otp.svg)](https://travis-ci.org/tristanwietsma/otp) [![Coverage Status](https://img.shields.io/coveralls/tristanwietsma/otp.svg)](https://coveralls.io/r/tristanwietsma/otp?branch=master) [![GoDoc](https://godoc.org/github.com/tristanwietsma/otp?status.svg)](https://godoc.org/github.com/tristanwietsma/otp)
 
