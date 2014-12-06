@@ -42,6 +42,7 @@
 <p><strong>There is nothing magical or secure about using your phone to implement 2-factor authentication.</strong> Sure, mobile phones provide us with some conveniences (scanning QR codes is nice), but the primary security advantage of 2-factor authentication results from the fact that dictionary attacks against such systems are futile.</p>
 
 <h3>Install and Initialize</h3>
+<p>Use the Go tool to install 2fa. Run `init` to create a dot-file config in your home directory.</p>
 <pre><code>$ go get github.com/tristanwietsma/otp/2fa
 $ 2fa init
 $ cat ~/.2fa.toml 
@@ -51,7 +52,24 @@ $ cat ~/.2fa.toml
 #
 # [key.label]
 # issuer = "The Issuer"
-# secret = <Base32 encoded secret key>
+# secret = "Base32 encoded secret key"
+</code></pre>
+
+<h3>Add a Key</h3>
+<p>Tip: Keep the label short and lean on the `issuer` entry for a longer description if you have multiple keys to manage with the same service. Here is an example:</p>
+
+<pre><code># [key.gh]
+# issuer = "GitHub"
+# secret = "MFRGGZDFMZTWQ2LK"
+</code></pre>
+
+<h3>List Keys</h3>
+<p>2fa was modeled after the Go tool's clean interface. To list keys in your config, run the `list` command:</p>
+
+<pre><code>$ 2fa list
+Label   Issuer
+--------------
+gh      GitHub
 </code></pre>
 
 
