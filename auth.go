@@ -17,7 +17,7 @@ type Hash func() hash.Hash
 func GetInterval(period int64) (int64, int64) {
 	t := time.Now().Unix()
 	iv := t / period
-	remain := t - (iv * period)
+	remain := period - (t - (iv * period))
 	return iv, remain
 }
 
