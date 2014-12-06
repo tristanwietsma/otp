@@ -1,3 +1,6 @@
+/*
+Terminal-based replacement for Google Authenicator
+*/
 package main
 
 import (
