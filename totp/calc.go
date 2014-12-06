@@ -5,7 +5,7 @@ import (
 	"github.com/tristanwietsma/otp"
 )
 
-func getCode(secret string) (string, rem) {
+func getCode(secret string) (string, int64) {
 	iv, rem := otp.GetInterval(30)
 	code, err := otp.GetCode(secret, iv, otp.Hashes[0], 6)
 	if err != nil {
