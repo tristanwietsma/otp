@@ -21,7 +21,8 @@ func (c initCommand) Run(args []string) bool {
 # Example:
 #
 # [key.label]
-# secret = Base32 encoded secret key
+# issuer = "The Issuer"
+# secret = <Base32 encoded secret key>
 `)
 	}
 	return true

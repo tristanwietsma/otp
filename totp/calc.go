@@ -5,13 +5,13 @@ import (
 	"github.com/tristanwietsma/otp"
 )
 
-func getCode(secret string) string {
-	iv := otp.GetInterval(30)
+func getCode(secret string) (string, rem) {
+	iv, rem := otp.GetInterval(30)
 	code, err := otp.GetCode(secret, iv, otp.Hashes[0], 6)
 	if err != nil {
 		return "calculation failed"
 	}
-	return code
+	return code, rem
 }
 
 type calcCommand struct{}
@@ -29,7 +29,8 @@ func (c calcCommand) Run(args []string) bool {
 	if !ok {
 		return false
 	}
-	fmt.Println(getCode(k.Secret))
+	code, rem := getCode(k.Secret)
+	fmt.Printf("%v (%v seconds)\n", code, rem)
 	return true
 }
 

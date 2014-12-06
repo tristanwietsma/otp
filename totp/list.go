@@ -12,9 +12,27 @@ func (c listCommand) Name() string {
 
 func (c listCommand) Run(args []string) bool {
 	cfg := getCfg()
-	for k := range cfg.Key {
-		fmt.Println(k)
+	fmt.Println("Label\tIssuer")
+
+	output := ""
+	line := ""
+	n := 0
+	for label, k := range cfg.Key {
+		line = fmt.Sprintf("%v\t%v\n", label, k.Issuer)
+		m := len(line)
+		if m > n {
+			n = m
+		}
+		output += line
 	}
+
+	dash := "---"
+	for len(dash) < n+4 {
+		dash += "-"
+	}
+	fmt.Println(dash)
+
+	fmt.Print(output)
 	return true
 }
 

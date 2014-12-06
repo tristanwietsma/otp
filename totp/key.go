@@ -6,4 +6,5 @@ type config struct {
 
 type key struct {
 	Secret string
+	Issuer string
 }
