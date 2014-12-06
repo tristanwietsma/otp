@@ -13,9 +13,12 @@ import (
 // Hash represents a function that returns a hash.Hash.
 type Hash func() hash.Hash
 
-// GetInterval returns the unix epoch divided by period.
-func GetInterval(period int64) int64 {
-	return time.Now().Unix() / period
+// GetInterval returns the unix epoch divided by period and the number of seconds remaining till expiration.
+func GetInterval(period int64) (int64, int64) {
+	t := time.Now().Unix()
+	iv := t / period
+	remain := t - (iv * period)
+	return iv, remain
 }
 
 // GetCode returns a one-time password.
