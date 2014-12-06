@@ -6,9 +6,6 @@
 
 There are other Go implementations of OTP out there, but this one is mine.
 
-## Status
+## 2fa: Terminal Authenticator
 
-- The math to calculate OTP codes is tested and in working order.
-- Much more work to be done before this is a useful package for production use.
-- Adding a CLI
-- Want to have a web example using some of the popular frameworks.
+This project ships with a terminal application for computing one-time passwords using Google Authenticator defaults. See [README](https://github.com/tristanwietsma/otp/blob/master/2fa/README.md) for full description.
