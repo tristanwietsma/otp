@@ -33,15 +33,26 @@
 <h2>library</h2>
 <p>text</p>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
+<pre><code>$ go get github.com/tristanwietsma/otp
 </code></pre>
 
 <br>
 <br>
 <h2>terminal authenticator</h2>
 <p><strong>There is nothing magical or secure about using your phone to implement 2-factor authentication.</strong> Sure, mobile phones provide us with some conveniences (scanning QR codes is nice), but the primary security advantage of 2-factor authentication results from the fact that dictionary attacks against such systems are futile.</p>
+
+<h3>Install and Initialize</h3>
+<pre><code>$ go get github.com/tristanwietsma/otp/2fa
+$ 2fa init
+$ cat ~/.2fa.toml 
+# totp configuration
+#
+# Example:
+#
+# [key.label]
+# issuer = "The Issuer"
+# secret = <Base32 encoded secret key>
+</code></pre>
 
 
 </section>
