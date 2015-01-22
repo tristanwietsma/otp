@@ -17,6 +17,7 @@ var commands = []command{
 	&calcCommand{},
 	&listCommand{},
 	&initCommand{},
+	&qrCommand{},
 }
 
 func usage() {
