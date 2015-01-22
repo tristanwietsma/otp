@@ -19,21 +19,21 @@
 </head>
 <body>
 
-<a href="https://github.com/tristanwietsma/otp"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+<a href="https://github.com/GolangDorks/otp"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
 
 <div class="wrapper">
 
 <section>
 
 <h1>otp: one-time passwords in go</h1>
-<p><a href="https://travis-ci.org/tristanwietsma/otp"><img src="https://camo.githubusercontent.com/e8cbcc2f8b8a8caf78523670f5a34f4db6916d03/68747470733a2f2f7472617669732d63692e6f72672f7472697374616e77696574736d612f6f74702e737667" alt="Build Status" data-canonical-src="https://travis-ci.org/tristanwietsma/otp.svg" style="max-width:100%;"></a> <a href="https://coveralls.io/r/tristanwietsma/otp?branch=master"><img src="https://camo.githubusercontent.com/9b6b1ec36380801c0836833ba850e90229bb67d7/68747470733a2f2f696d672e736869656c64732e696f2f636f766572616c6c732f7472697374616e77696574736d612f6f74702e737667" alt="Coverage Status" data-canonical-src="https://img.shields.io/coveralls/tristanwietsma/otp.svg" style="max-width:100%;"></a> <a href="https://godoc.org/github.com/tristanwietsma/otp"><img src="https://camo.githubusercontent.com/4e775654d399057e03c0daf83b23f383f7102d15/68747470733a2f2f676f646f632e6f72672f6769746875622e636f6d2f7472697374616e77696574736d612f6f74703f7374617475732e737667" alt="GoDoc" data-canonical-src="https://godoc.org/github.com/tristanwietsma/otp?status.svg" style="max-width:100%;"></a> <a class="github-button" href="https://github.com/tristanwietsma/otp" data-count-href="/tristanwietsma/otp/stargazers" data-count-api="/repos/tristanwietsma/otp#stargazers_count">Star</a>
+<p><a href="https://travis-ci.org/GolangDorks/otp"><img src="https://camo.githubusercontent.com/e8cbcc2f8b8a8caf78523670f5a34f4db6916d03/68747470733a2f2f7472617669732d63692e6f72672f7472697374616e77696574736d612f6f74702e737667" alt="Build Status" data-canonical-src="https://travis-ci.org/GolangDorks/otp.svg" style="max-width:100%;"></a> <a href="https://coveralls.io/r/GolangDorks/otp?branch=master"><img src="https://camo.githubusercontent.com/9b6b1ec36380801c0836833ba850e90229bb67d7/68747470733a2f2f696d672e736869656c64732e696f2f636f766572616c6c732f7472697374616e77696574736d612f6f74702e737667" alt="Coverage Status" data-canonical-src="https://img.shields.io/coveralls/GolangDorks/otp.svg" style="max-width:100%;"></a> <a href="https://godoc.org/github.com/GolangDorks/otp"><img src="https://camo.githubusercontent.com/4e775654d399057e03c0daf83b23f383f7102d15/68747470733a2f2f676f646f632e6f72672f6769746875622e636f6d2f7472697374616e77696574736d612f6f74703f7374617475732e737667" alt="GoDoc" data-canonical-src="https://godoc.org/github.com/GolangDorks/otp?status.svg" style="max-width:100%;"></a> <a class="github-button" href="https://github.com/GolangDorks/otp" data-count-href="/GolangDorks/otp/stargazers" data-count-api="/repos/GolangDorks/otp#stargazers_count">Star</a>
 
 </p>
 <br>
 <br>
 
 <h2>otp, the library</h2>
-<p>The `otp` library implements HMAC-based one-time passwords. By extension, this includes time-based passwords. See <a href="https://godoc.org/github.com/tristanwietsma/otp">GoDoc</a> for full documentation, but here are some highlights:</p>
+<p>The `otp` library implements HMAC-based one-time passwords. By extension, this includes time-based passwords. See <a href="https://godoc.org/github.com/GolangDorks/otp">GoDoc</a> for full documentation, but here are some highlights:</p>
 
 <ul>
 <li>Support for SHA1, SHA256, SHA512, and MD5 hashing.</li>
@@ -41,7 +41,7 @@
 <li>URI and Key validation.</li>
 </ul>
 
-<pre><code>$ go get github.com/tristanwietsma/otp
+<pre><code>$ go get github.com/GolangDorks/otp
 </code></pre>
 
 <br>
@@ -51,7 +51,7 @@
 
 <h3>Install and Initialize</h3>
 <p>Use the Go tool to install 2fa. Run `init` to create a dot-file config in your home directory.</p>
-<pre><code>$ go get github.com/tristanwietsma/otp/2fa
+<pre><code>$ go get github.com/GolangDorks/otp/2fa
 $ 2fa init
 $ cat ~/.2fa.toml 
 # 2fa configuration
@@ -85,6 +85,13 @@ gh      GitHub
 
 <pre><code>$ 2fa calc gh
 814498 (16 seconds)
+</code></pre>
+
+<h3>Get QR Codes</h3>
+<p>Want to print your codes as convenient QR code images or transfer them to Google Authenticator? Start up the QR code server.</p>
+
+<pre><code>$ 2fa qrcodes
+serving QR codes at http://localhost:3000
 </code></pre>
 
 </section>
