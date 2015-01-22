@@ -9,7 +9,7 @@ Just like Google Authenticator, `2fa` uses time-based one-time passwords with 30
 ## Installation
 
 ```bash
-$ go get github.com/tristanwietsma/otp/2fa
+$ go get github.com/GolangDorks/otp/2fa
 ```
 
 ## Usage
