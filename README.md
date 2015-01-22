@@ -1,6 +1,6 @@
 # One-Time Passwords in Go
 
-[![Build Status](https://travis-ci.org/GolangDorks/otp.svg)](https://travis-ci.org/GolangDorks/otp) [![Coverage Status](https://img.shields.io/coveralls/GolangDorks/otp.svg)](https://coveralls.io/r/GolangDorks/otp?branch=master) [![GoDoc](https://godoc.org/github.com/GolangDorks/otp?status.svg)](https://godoc.org/github.com/GolangDorks/otp)
+[![Build Status](https://travis-ci.org/GolangDorks/otp.svg)](https://travis-ci.org/GolangDorks/otp) [![GoDoc](https://godoc.org/github.com/GolangDorks/otp?status.svg)](https://godoc.org/github.com/GolangDorks/otp)
 
 There are other Go implementations of OTP out there, but this one is mine.
 
