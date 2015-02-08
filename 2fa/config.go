@@ -18,7 +18,7 @@ func getCfg() *config {
 	var cfg config
 	path := getCfgPath()
 	if _, err := toml.DecodeFile(path, &cfg); err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 	return &cfg
 }
