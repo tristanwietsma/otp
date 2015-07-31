@@ -3,7 +3,7 @@ package main
 import (
 	"code.google.com/p/rsc/qr"
 	"fmt"
-	"github.com/GolangDorks/otp"
+	"github.com/tristanwietsma/otp"
 )
 
 type qrCommand struct{}
