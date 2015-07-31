@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/GolangDorks/otp"
+	"github.com/tristanwietsma/otp"
 )
 
 func getCode(secret string) (string, int64) {
