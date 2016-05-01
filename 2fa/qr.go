@@ -1,9 +1,9 @@
 package main
 
 import (
-	"code.google.com/p/rsc/qr"
 	"fmt"
 	"github.com/tristanwietsma/otp"
+	"github.com/tristanwietsma/rsc/qr"
 )
 
 type qrCommand struct{}

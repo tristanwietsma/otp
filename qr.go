@@ -1,7 +1,7 @@
 package otp
 
 import (
-	"code.google.com/p/rsc/qr"
+	"github.com/tristanwietsma/rsc/qr"
 )
 
 // QrCode returns the qr.Code representation of the otpauth URI.
